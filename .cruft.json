@@ -1,0 +1,26 @@
+{
+  "template": "https://github.com/scientific-python/cookie",
+  "commit": "967d81a3a164f4adcb09feaacae1c60bc7c6af68",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "scikit-poles-zeros",
+      "org": "j-bowhay",
+      "url": "https://github.com/j-bowhay/scikit-poles-zeros",
+      "full_name": "Jake Bowhay",
+      "email": "jb9.bowhay@gmail.com",
+      "project_short_description": "A package to compute all the poles and zeros of a meromorphic function in a cbounded subset of the complex plane.",
+      "license": "MIT",
+      "backend": "hatch",
+      "vcs": true,
+      "__year": "2025",
+      "__project_slug": "scikit_poles_zeros",
+      "__type": "pure",
+      "__answers": "",
+      "__ci": "github",
+      "_template": "https://github.com/scientific-python/cookie",
+      "_commit": "967d81a3a164f4adcb09feaacae1c60bc7c6af68"
+    }
+  },
+  "directory": null
+}
