@@ -25,3 +25,5 @@
 [rtd-link]:                 https://scikit-poles-zeros.readthedocs.io/en/latest/?badge=latest
 
 <!-- prettier-ignore-end -->
+
+**WARNING UNDER DEVELOPMENT**
