@@ -5,6 +5,8 @@ from functools import cached_property
 class Rectangle:
     """Rectangle region in the complex plane."""
 
+    __slots__ = "__dict__", "bottom_left", "children", "top_right"
+
     def __init__(self, bottom_left, top_right, /):
         # check that top_right is to the right and above bottom left in the complex
         # plane
