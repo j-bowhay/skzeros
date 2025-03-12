@@ -15,3 +15,9 @@ class TestRectangle:
         assert r.bottom_left == bl
         assert r.top_right == tr
         assert r.corners == (bl, 12 + 2j, tr, 1 + 10j)
+
+    @pytest.mark.parametrize("attr", ["top_right", "bottom_left", "children"])
+    def test_read_only(self, attr):
+        d = Rectangle(0, complex(1, 1))
+        with pytest.raises(AttributeError):
+            setattr(d, attr, 1)

@@ -5,7 +5,7 @@ from functools import cached_property
 class Rectangle:
     """Rectangle region in the complex plane."""
 
-    __slots__ = "__dict__", "bottom_left", "children", "top_right"
+    __slots__ = "__dict__", "_bottom_left", "_children", "_top_right"
 
     def __init__(self, bottom_left, top_right, /):
         # check that top_right is to the right and above bottom left in the complex
@@ -16,19 +16,31 @@ class Rectangle:
                 "plane"
             )
             raise ValueError(msg)
-        self.bottom_left = bottom_left
-        self.top_right = top_right
+        self._bottom_left = bottom_left
+        self._top_right = top_right
 
         # children created if region is subdivided
         # 0th entry left/top, 1st entry right/bottom
-        self.children = None
+        self._children = None
+
+    @property
+    def bottom_left(self):
+        return self._bottom_left
+
+    @property
+    def top_right(self):
+        return self._top_right
+
+    @property
+    def children(self):
+        return self._children
 
     @cached_property
     def corners(self):
         """Returns the corners of the rectangle in a counter clockwise order
         starting from the bottom left."""
-        bl = self.bottom_left
-        tr = self.top_right
+        bl = self._bottom_left
+        tr = self._top_right
         return (bl, complex(tr.real, bl.imag), tr, complex(bl.real, tr.imag))
 
     def contour_integral(self, _):
