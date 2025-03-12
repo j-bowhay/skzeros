@@ -27,7 +27,7 @@ class Rectangle:
         starting from the bottom left."""
         bl = self.bottom_left
         tr = self.top_right
-        return (bl, tr.real + bl.imag, tr, bl.real + tr.imag)
+        return (bl, complex(tr.real, bl.imag), tr, complex(bl.real, tr.imag))
 
     def contour_integral(self, _):
         """Compute the contour integral of `f` around the region."""
