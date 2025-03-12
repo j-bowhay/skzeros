@@ -8,7 +8,7 @@ class Rectangle:
     def __init__(self, bottom_left, top_right, /):
         # check that top_right is to the right and above bottom left in the complex
         # plane
-        if bottom_left.real > top_right.real or bottom_left.imag > top_right.imag:
+        if bottom_left.real >= top_right.real or bottom_left.imag >= top_right.imag:
             msg = (
                 "`top_right` must be to the right and above bottom left in the complex "
                 "plane"
