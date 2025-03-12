@@ -1,8 +1,25 @@
+from abc import ABC, abstractmethod
 from collections import deque
 from functools import cached_property
 
 
-class Rectangle:
+class Domain(ABC):
+    """Abstract Domain"""
+
+    __slots__ = ()
+
+    @property
+    @abstractmethod
+    def children(self): ...
+
+    @abstractmethod
+    def contour_integral(self, f): ...
+
+    @abstractmethod
+    def subdivide(self): ...
+
+
+class Rectangle(Domain):
     """Rectangle region in the complex plane."""
 
     __slots__ = "__dict__", "_bottom_left", "_children", "_top_right"
