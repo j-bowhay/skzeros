@@ -20,6 +20,9 @@ class Domain(ABC):
     @abstractmethod
     def subdivide(self): ...
 
+    @abstractmethod
+    def plot(self, ax): ...
+
 
 class Rectangle(Domain):
     """Rectangle region in the complex plane."""
@@ -79,6 +82,8 @@ class Rectangle(Domain):
         return res
 
     def subdivide(self): ...
+
+    def plot(self, ax): ...
 
 
 def _subdivide_domain(domain, f, f_z, f_zz, max_poles_zeros):
