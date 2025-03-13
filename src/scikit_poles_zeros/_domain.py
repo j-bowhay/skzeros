@@ -2,6 +2,9 @@ from abc import ABC, abstractmethod
 from collections import deque
 from functools import cached_property
 
+import numpy as np
+from scipy.integrate import tanhsinh
+
 
 class Domain(ABC):
     """Abstract Domain"""
@@ -60,8 +63,17 @@ class Rectangle(Domain):
         tr = self._top_right
         return (bl, complex(tr.real, bl.imag), tr, complex(bl.real, tr.imag))
 
-    def contour_integral(self, _):
+    def contour_integral(self, f, tanhsinh_args=None):
         """Compute the contour integral of `f` around the region."""
+        tanhsinh_args = {} if tanhsinh_args is None else tanhsinh_args
+
+        def f_wrapped(t, _a, _b):
+            return f(_a * (1 - t) + _b * t)
+
+        a, b = self.corners, np.roll(self.corners, -1)
+        res = tanhsinh(f_wrapped, 0, 1, args=(a, b))
+        res.integral *= b - a
+        return res
 
     def subdivide(self): ...
 
