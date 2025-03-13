@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from collections import deque
-from functools import cached_property
 
 import numpy as np
 from scipy.integrate import tanhsinh
@@ -25,7 +24,7 @@ class Domain(ABC):
 class Rectangle(Domain):
     """Rectangle region in the complex plane."""
 
-    __slots__ = "__dict__", "_bottom_left", "_children", "_top_right"
+    __slots__ = "_bottom_left", "_children", "_corners", "_top_right"
 
     def __init__(self, bottom_left, top_right, /):
         # check that top_right is to the right and above bottom left in the complex
@@ -38,6 +37,12 @@ class Rectangle(Domain):
             raise ValueError(msg)
         self._bottom_left = bottom_left
         self._top_right = top_right
+        self._corners = (
+            bottom_left,
+            complex(top_right.real, bottom_left.imag),
+            top_right,
+            complex(bottom_left.real, top_right.imag),
+        )
 
         # children created if region is subdivided
         # 0th entry left/top, 1st entry right/bottom
@@ -55,13 +60,11 @@ class Rectangle(Domain):
     def children(self):
         return self._children
 
-    @cached_property
+    @property
     def corners(self):
         """Returns the corners of the rectangle in a counter clockwise order
         starting from the bottom left."""
-        bl = self._bottom_left
-        tr = self._top_right
-        return (bl, complex(tr.real, bl.imag), tr, complex(bl.real, tr.imag))
+        return self._corners
 
     def contour_integral(self, f, tanhsinh_args=None):
         """Compute the contour integral of `f` around the region."""
