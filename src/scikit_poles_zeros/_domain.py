@@ -79,6 +79,7 @@ class Rectangle(Domain):
         a, b = self.corners, np.roll(self.corners, -1)
         res = tanhsinh(f_wrapped, 0, 1, args=(a, b))
         res.integral *= b - a
+        res.integral = np.sum(res.integral)
         return res
 
     def subdivide(self): ...

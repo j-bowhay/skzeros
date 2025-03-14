@@ -1,4 +1,6 @@
+import numpy as np
 import pytest
+from numpy.testing import assert_allclose, assert_equal
 
 from scikit_poles_zeros._domain import Rectangle
 
@@ -23,3 +25,18 @@ class TestRectangle:
         d = Rectangle(0, complex(1, 1))
         with pytest.raises(AttributeError):
             setattr(d, attr, 1)
+
+    @pytest.mark.parametrize(
+        ("f", "bl", "tr", "expected"),
+        [
+            (lambda z: 1 / z, complex(-1, -1), complex(1, 1), 2j * np.pi),
+            (lambda z: 1 / (z**2 + 1) ** 2, -1, complex(10, 10), np.pi / 2),
+            (lambda z: np.sin(z), complex(-10, -10), complex(12, 3), 0),
+        ],
+    )
+    def test_contour_integral(self, f, bl, tr, expected):
+        d = Rectangle(bl, tr)
+        res = d.contour_integral(f)
+        assert np.all(res.success)
+        assert_equal(res.status, 0)
+        assert_allclose(res.integral, expected, atol=1e-10)
