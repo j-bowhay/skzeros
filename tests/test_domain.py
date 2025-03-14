@@ -40,3 +40,8 @@ class TestRectangle:
         assert np.all(res.success)
         assert_equal(res.status, 0)
         assert_allclose(res.integral, expected, atol=1e-10)
+
+    def test_contour_integral_args_pass_through(self):
+        d = Rectangle(0, complex(1, 1))
+        r = d.contour_integral(lambda z: z * 10, quadrature_args={"maxlevel": 1})
+        assert np.all(~r.success)

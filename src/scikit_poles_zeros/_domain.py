@@ -69,15 +69,15 @@ class Rectangle(Domain):
         starting from the bottom left."""
         return self._corners
 
-    def contour_integral(self, f, tanhsinh_args=None):
+    def contour_integral(self, f, *, quadrature_args=None):
         """Compute the contour integral of `f` around the region."""
-        tanhsinh_args = {} if tanhsinh_args is None else tanhsinh_args
+        quadrature_args = {} if quadrature_args is None else quadrature_args
 
         def f_wrapped(t, _a, _b):
             return f(_a * (1 - t) + _b * t)
 
         a, b = self.corners, np.roll(self.corners, -1)
-        res = tanhsinh(f_wrapped, 0, 1, args=(a, b))
+        res = tanhsinh(f_wrapped, 0, 1, args=(a, b), **quadrature_args)
         res.integral *= b - a
         res.integral = np.sum(res.integral)
         return res
