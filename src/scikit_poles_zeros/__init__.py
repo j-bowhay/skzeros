@@ -1,7 +1,8 @@
 """
 Copyright (c) 2025 Jake Bowhay. All rights reserved.
 
-scikit-poles-zeros: A package to compute all the poles and zeros of a meromorphic function in a cbounded subset of the complex plane.
+scikit-poles-zeros: A package to compute all the poles and zeros of a meromorphic
+function in a bounded subset of the complex plane.
 """
 
 from __future__ import annotations

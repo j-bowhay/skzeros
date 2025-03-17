@@ -26,6 +26,7 @@ class TestRectangle:
         with pytest.raises(AttributeError):
             setattr(d, attr, 1)
 
+    @pytest.mark.parametrize("method", ["gk21", "tanhsinh"])
     @pytest.mark.parametrize(
         ("f", "bl", "tr", "expected"),
         [
@@ -34,14 +35,21 @@ class TestRectangle:
             (lambda z: np.sin(z), complex(-10, -10), complex(12, 3), 0),
         ],
     )
-    def test_contour_integral(self, f, bl, tr, expected):
+    def test_contour_integral(self, f, bl, tr, expected, method):
         d = Rectangle(bl, tr)
-        res = d.contour_integral(f)
+        res = d.contour_integral(f, method=method)
         assert np.all(res.success)
         assert_equal(res.status, 0)
         assert_allclose(res.integral, expected, atol=1e-10)
 
     def test_contour_integral_args_pass_through(self):
         d = Rectangle(0, complex(1, 1))
-        r = d.contour_integral(lambda z: z * 10, quadrature_args={"maxlevel": 1})
+        r = d.contour_integral(
+            lambda z: z * 10, method="tanhsinh", quadrature_args={"maxlevel": 1}
+        )
         assert np.all(~r.success)
+
+    def test_contour_integral_invalid_method(self):
+        d = Rectangle(0, complex(1, 1))
+        with pytest.raises(ValueError, match="Invalid `method`"):
+            d.contour_integral(lambda z: z, method="cheese")

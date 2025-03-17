@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 from collections import deque
+from typing import Literal
 
 import numpy as np
 from scipy.integrate import tanhsinh
+
+from scikit_poles_zeros._integrate import _quadvec
 
 
 class Domain(ABC):
@@ -69,15 +72,25 @@ class Rectangle(Domain):
         starting from the bottom left."""
         return self._corners
 
-    def contour_integral(self, f, *, quadrature_args=None):
+    def contour_integral(
+        self, f, *, method: Literal["gk21", "tanhsinh"] = "gk21", quadrature_args=None
+    ):
         """Compute the contour integral of `f` around the region."""
         quadrature_args = {} if quadrature_args is None else quadrature_args
 
         def f_wrapped(t, _a, _b):
             return f(_a * (1 - t) + _b * t)
 
-        a, b = self.corners, np.roll(self.corners, -1)
-        res = tanhsinh(f_wrapped, 0, 1, args=(a, b), **quadrature_args)
+        a, b = np.asarray(self.corners), np.roll(self.corners, -1)
+        if method == "tanhsinh":
+            res = tanhsinh(f_wrapped, 0, 1, args=(a, b), **quadrature_args)
+        elif method == "gk21":
+            res = _quadvec(f_wrapped, 0, 1, args=(a, b), **quadrature_args)
+        else:
+            msg = "Invalid `method`"
+            raise ValueError(msg)
+
+        # multiply by the Jacobian
         res.integral *= b - a
         res.integral = np.sum(res.integral)
         return res
