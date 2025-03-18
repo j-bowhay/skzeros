@@ -22,6 +22,10 @@ class Problem(ABC):
     @abstractmethod
     def domain(self): ...
 
+    @property
+    @abstractmethod
+    def expected_arg_principle(self): ...
+
 
 class ExampleHolomorphic(Problem):
     """From Locating all the zeros of an analytic function in one complex variable,
@@ -49,3 +53,38 @@ class ExampleHolomorphic(Problem):
     domain = Rectangle(complex(-20.3, -20.3), complex(20.7, 20.7))
 
     expected_arg_principle = 424
+
+
+class SimpleRational(Problem):
+    """https://github.com/fgasdia/RootsAndPoles.jl/blob/master/test/SimpleRationalFunction.jl"""
+
+    def f(z):
+        return (z - 1) * (z - 1j) ** 2 * (z + 1) ** 3 / (z + 1j)
+
+    def f_z(z):
+        return (
+            (z + 1) ** 2
+            * (z - 1j)
+            * (
+                -(z - 1) * (z + 1) * (z - 1j)
+                + (z + 1j)
+                * (2 * (z - 1) * (z + 1) + 3 * (z - 1) * (z - 1j) + (z + 1) * (z - 1j))
+            )
+            / (z + 1j) ** 2
+        )
+
+    def f_zz(z):
+        return (
+            20 * z**6
+            + z**5 * (24 + 24 * 1j)
+            + z**4 * (24 + 36 * 1j)
+            + z**3 * (16 + 24 * 1j)
+            + z**2 * (12 + 24 * 1j)
+            + 24 * z
+            + 8
+            - 12 * 1j
+        ) / (z**3 + 3 * 1j * z**2 - 3 * z - 1j)
+
+    domain = Rectangle(complex(-2, -2), complex(2, 2))
+
+    expected_arg_principle = 6 - 1
