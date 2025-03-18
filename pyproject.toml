@@ -37,7 +37,6 @@ dependencies = [
 test = [
   "pytest >=6",
   "pytest-cov >=3",
-  "jax"
 ]
 dev = [
   "pytest >=6",
