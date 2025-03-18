@@ -4,6 +4,8 @@ from numpy.testing import assert_allclose, assert_equal
 
 from scikit_poles_zeros._domain import Rectangle
 
+from . import problems
+
 
 class TestRectangle:
     @pytest.mark.parametrize(("bl", "tr"), [(0, 0), (0, 1), (0, 1j), (1 + 1j, 0)])
@@ -53,3 +55,10 @@ class TestRectangle:
         d = Rectangle(0, complex(1, 1))
         with pytest.raises(ValueError, match="Invalid `method`"):
             d.contour_integral(lambda z: z, method="cheese")
+
+    @pytest.mark.parametrize("problem", [problems.ExampleHolomorphic])
+    def test_arg_principle(self, problem: problems.Problem):
+        assert_allclose(
+            problem.domain.argument_principle(problem.f, problem.f_z).integral,
+            problem.expected_arg_principle,
+        )

@@ -47,3 +47,5 @@ class ExampleHolomorphic(Problem):
         )
 
     domain = Rectangle(complex(-20.3, -20.3), complex(20.7, 20.7))
+
+    expected_arg_principle = 424
