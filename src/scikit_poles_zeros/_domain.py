@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from collections import deque
+from math import pi
 from typing import Literal
 
 import numpy as np
@@ -18,13 +19,29 @@ class Domain(ABC):
     def children(self): ...
 
     @abstractmethod
-    def contour_integral(self, f): ...
+    def contour_integral(
+        self, f, *, method: Literal["gk21", "tanhsinh"] = "gk21", quadrature_args=None
+    ): ...
 
     @abstractmethod
     def subdivide(self): ...
 
     @abstractmethod
     def plot(self, ax): ...
+
+    def argument_principle(
+        self,
+        f,
+        f_z,
+        *,
+        method: Literal["gk21", "tanhsinh"] = "gk21",
+        quadrature_args=None,
+    ):
+        res = self.contour_integral(
+            lambda z: f_z(z) / f(z), method=method, quadrature_args=quadrature_args
+        )
+        res.integral /= complex(0, 2 * pi)
+        return res
 
 
 class Rectangle(Domain):
