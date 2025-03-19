@@ -56,11 +56,10 @@ class TestRectangle:
         with pytest.raises(ValueError, match="Invalid `method`"):
             d.contour_integral(lambda z: z, method="cheese")
 
-    @pytest.mark.parametrize(
-        "problem", [problems.ExampleHolomorphic, problems.SimpleRational]
-    )
+    @pytest.mark.parametrize("problem", problems.all)
     def test_arg_principle(self, problem: problems.Problem):
         assert_allclose(
             problem.domain.argument_principle(problem.f, problem.f_z).integral,
-            problem.expected_arg_principle,
+            problem.expected_arg_principle(),
+            atol=1e-12,
         )

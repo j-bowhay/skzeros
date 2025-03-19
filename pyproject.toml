@@ -122,6 +122,7 @@ extend-select = [
 ignore = [
   "PLR09",    # Too many <...>
   "PLR2004",  # Magic value used in comparison
+  "RUF012",
 ]
 isort.required-imports = []
 # Uncomment if using a _compat.typing backport

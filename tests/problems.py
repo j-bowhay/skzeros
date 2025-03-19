@@ -22,9 +22,27 @@ class Problem(ABC):
     @abstractmethod
     def domain(self): ...
 
-    @property
-    @abstractmethod
-    def expected_arg_principle(self): ...
+    @classmethod
+    def expected_arg_principle(cls):
+        return sum(cls.zeros_multiplicities) - sum(cls.poles_multiplicities)
+
+    zeros = []
+    zeros_multiplicities = []
+    poles = []
+    poles_multiplicities = []
+
+
+class NoRootPole(Problem):
+    def f(z):
+        return (z - 1) ** 3
+
+    def f_z(z):
+        return 3 * (z - 1) ** 2
+
+    def f_zz(z):
+        return 6 * (z - 1)
+
+    domain = Rectangle(complex(2, 2), complex(5, 5))
 
 
 class ExampleHolomorphic(Problem):
@@ -52,7 +70,9 @@ class ExampleHolomorphic(Problem):
 
     domain = Rectangle(complex(-20.3, -20.3), complex(20.7, 20.7))
 
-    expected_arg_principle = 424
+    @staticmethod
+    def expected_arg_principle():
+        return 424
 
 
 class SimpleRational(Problem):
@@ -87,4 +107,12 @@ class SimpleRational(Problem):
 
     domain = Rectangle(complex(-2, -2), complex(2, 2))
 
-    expected_arg_principle = 6 - 1
+    zeros = [1, 1j, -1]
+    zeros_multiplicities = [1, 2, 3]
+    poles = [-1j]
+    poles_multiplicities = [1]
+
+
+with_known_roots_poles = (NoRootPole, SimpleRational)
+without_known_roots_poles = (ExampleHolomorphic,)
+all = with_known_roots_poles + without_known_roots_poles
