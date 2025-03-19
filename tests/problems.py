@@ -45,6 +45,22 @@ class NoRootPole(Problem):
     domain = Rectangle(complex(2, 2), complex(5, 5))
 
 
+class Polynomial1(Problem):
+    def f(z):
+        return z**3 * (z - 1.2) ** 2
+
+    def f_z(z):
+        return z**2 * (5.0 * z**2 - 9.6 * z + 4.32)
+
+    def f_zz(z):
+        return z * (20.0 * z**2 - 28.8 * z + 8.64)
+
+    domain = Rectangle(complex(-2, -2), complex(2, 2))
+
+    zeros = [0, 1.2]
+    zeros_multiplicities = [3, 2]
+
+
 class ExampleHolomorphic(Problem):
     """From Locating all the zeros of an analytic function in one complex variable,
     Michael Dellnitza, Oliver Sch,utzea, Qinghua Zheng, Section 4.1"""
@@ -113,6 +129,6 @@ class SimpleRational(Problem):
     poles_multiplicities = [1]
 
 
-with_known_roots_poles = (NoRootPole, SimpleRational)
+with_known_roots_poles = (NoRootPole, SimpleRational, Polynomial1)
 without_known_roots_poles = (ExampleHolomorphic,)
 all = with_known_roots_poles + without_known_roots_poles
