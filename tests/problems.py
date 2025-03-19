@@ -136,6 +136,72 @@ class KVB143(Problem):
     domain = Rectangle(complex(-5, -5), complex(5, 5))
 
 
+class KVB144(Problem):
+    def f(z):
+        return z**2 * (z - 2) ** 2 * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
+
+    def f_z(z):
+        return (
+            z
+            * (z - 2)
+            * (
+                z
+                * (z - 2)
+                * (
+                    3 * z**2
+                    - np.exp(2 * z) * np.sin(z)
+                    + 2 * np.exp(2 * z) * np.cos(z)
+                    - np.cos(z)
+                )
+                + 2 * z * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
+                + (2 * z - 4) * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
+            )
+        )
+
+    def f_zz(z):
+        return (
+            z**2
+            * (z - 2) ** 2
+            * (
+                6 * z
+                - 4 * np.exp(2 * z) * np.sin(z)
+                + 3 * np.exp(2 * z) * np.cos(z)
+                + np.sin(z)
+            )
+            + 4
+            * z**2
+            * (z - 2)
+            * (
+                3 * z**2
+                - np.exp(2 * z) * np.sin(z)
+                + 2 * np.exp(2 * z) * np.cos(z)
+                - np.cos(z)
+            )
+            + 2 * z**2 * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
+            + 4
+            * z
+            * (z - 2) ** 2
+            * (
+                3 * z**2
+                - np.exp(2 * z) * np.sin(z)
+                + 2 * np.exp(2 * z) * np.cos(z)
+                - np.cos(z)
+            )
+            + 8 * z * (z - 2) * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
+            + 2 * (z - 2) ** 2 * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
+        )
+
+    zeros = [
+        -0.4607141197289707542294459477 - 0.6254277693477682516688207854j,
+        -0.4607141197289707542294459477 + 0.6254277693477682516688207854j,
+        0,
+        2,
+        1.66468286974551654134568653,
+    ]
+    zeros_multiplicities = [1, 1, 3, 2, 1]
+    domain = Rectangle(complex(-3, -3), complex(3, 3))
+
+
 class ExampleHolomorphic(Problem):
     """From Locating all the zeros of an analytic function in one complex variable,
     Michael Dellnitza, Oliver Sch,utzea, Qinghua Zheng, Section 4.1"""
@@ -211,6 +277,7 @@ with_known_roots_poles = (
     KVB141,
     KVB142,
     KVB143,
+    KVB144,
 )
 without_known_roots_poles = (ExampleHolomorphic,)
 all = with_known_roots_poles + without_known_roots_poles
