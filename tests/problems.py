@@ -271,6 +271,43 @@ class KVB151(Problem):
     domain = Rectangle(complex(-2, -2), complex(2, 3))
 
 
+class KVB152(Problem):
+    def f(z):
+        return z * (z * (z - 4) * (z - 3) * (z - 2) * (z - 1) + np.sin(z))
+
+    def f_z(z):
+        return (
+            6 * z**5
+            - 50 * z**4
+            + 140 * z**3
+            - 150 * z**2
+            + z * np.cos(z)
+            + 48 * z
+            + np.sin(z)
+        )
+
+    def f_zz(z):
+        return (
+            30 * z**4
+            - 200 * z**3
+            + 420 * z**2
+            - z * np.sin(z)
+            - 300 * z
+            + 2 * np.cos(z)
+            + 48
+        )
+
+    zeros = [
+        0,
+        1.18906588973011365517521756,
+        1.72843498616506284043592924,
+        3.01990732809571222812005354,
+        4.03038191606046844562845941,
+    ]
+    zeros_multiplicities = [2, 1, 1, 1, 1]
+    domain = Rectangle(complex(-0.5, -0.5), complex(5.5, 1.5))
+
+
 class ExampleHolomorphic(Problem):
     """From Locating all the zeros of an analytic function in one complex variable,
     Michael Dellnitza, Oliver Sch,utzea, Qinghua Zheng, Section 4.1"""
@@ -349,6 +386,7 @@ with_known_roots_poles = (
     KVB144,
     KVB145,
     KVB151,
+    KVB152,
 )
 without_known_roots_poles = (ExampleHolomorphic,)
 all = with_known_roots_poles + without_known_roots_poles
