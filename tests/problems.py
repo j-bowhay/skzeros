@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from math import sqrt
 
 import numpy as np
 
@@ -59,6 +60,22 @@ class Polynomial1(Problem):
 
     zeros = [0, 1.2]
     zeros_multiplicities = [3, 2]
+
+
+class KVB141(Problem):
+    def f(z):
+        return (z - 10e-2) * (1 + (z - sqrt(3)) ** 2)
+
+    def f_z(z):
+        return 2 * (z - 0.1) * (z - np.sqrt(3)) + (z - np.sqrt(3)) ** 2 + 1
+
+    def f_zz(z):
+        return 6 * z - 4 * np.sqrt(3) - 0.2
+
+    zeros = [10e-2, sqrt(3) + 1j, sqrt(3) - 1j]
+    zeros_multiplicities = [1, 1, 1]
+
+    domain = Rectangle(complex(0, -1.2), complex(2, 1.2))
 
 
 class ExampleHolomorphic(Problem):
@@ -129,6 +146,6 @@ class SimpleRational(Problem):
     poles_multiplicities = [1]
 
 
-with_known_roots_poles = (NoRootPole, SimpleRational, Polynomial1)
+with_known_roots_poles = (NoRootPole, SimpleRational, Polynomial1, KVB141)
 without_known_roots_poles = (ExampleHolomorphic,)
 all = with_known_roots_poles + without_known_roots_poles
