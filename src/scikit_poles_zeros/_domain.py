@@ -4,6 +4,7 @@ from math import pi
 from typing import Literal
 
 import numpy as np
+from matplotlib import patches
 from scipy.integrate import tanhsinh
 
 from scikit_poles_zeros._integrate import _quadvec
@@ -69,7 +70,7 @@ class Rectangle(Domain):
 
         # children created if region is subdivided
         # 0th entry left/top, 1st entry right/bottom
-        self._children = None
+        self._children = []
 
     @property
     def bottom_left(self):
@@ -112,9 +113,28 @@ class Rectangle(Domain):
         res.integral = np.sum(res.integral)
         return res
 
-    def subdivide(self): ...
+    def subdivide(self):
+        diag = self.top_right - self.bottom_left
 
-    def plot(self, ax): ...
+        if diag.real > diag.imag:
+            ...
+        else:
+            ...
+
+    def plot(self, ax):
+        diff = self.top_right - self.bottom_left
+        ax.add_patch(
+            patches.Rectangle(
+                (self.bottom_left.real, self.bottom_left.imag),
+                diff.real,
+                diff.imag,
+                fc="none",
+                edgecolor="r",
+                lw=2,
+            )
+        )
+        for child in self.children:
+            child.plot(ax)
 
 
 def _subdivide_domain(domain, f, f_z, max_arg_principle):
