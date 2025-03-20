@@ -116,10 +116,20 @@ class Rectangle(Domain):
     def subdivide(self):
         diag = self.top_right - self.bottom_left
 
-        if diag.real > diag.imag:
-            ...
-        else:
-            ...
+        if diag.real >= diag.imag:  # split vertically
+            self.children.append(
+                Rectangle(self.bottom_left, self.top_right - diag.real / 2)
+            )
+            self.children.append(
+                Rectangle(self.bottom_left + diag.real / 2, self.top_right)
+            )
+        else:  # split horizontally
+            self.children.append(
+                Rectangle(self.bottom_left, self.top_right - 1j * diag.imag / 2)
+            )
+            self.children.append(
+                Rectangle(self.bottom_left + 1j * diag.imag / 2, self.top_right)
+            )
 
     def plot(self, ax):
         diff = self.top_right - self.bottom_left
