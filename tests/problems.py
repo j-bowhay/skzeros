@@ -15,10 +15,6 @@ class Problem(ABC):
     @abstractmethod
     def f_z(z): ...
 
-    @staticmethod
-    @abstractmethod
-    def f_zz(z): ...
-
     @property
     @abstractmethod
     def domain(self): ...
@@ -40,9 +36,6 @@ class NoRootPole(Problem):
     def f_z(z):
         return 3 * (z - 1) ** 2
 
-    def f_zz(z):
-        return 6 * (z - 1)
-
     domain = Rectangle(complex(2, 2), complex(5, 5))
 
 
@@ -52,9 +45,6 @@ class Polynomial1(Problem):
 
     def f_z(z):
         return z**2 * (5.0 * z**2 - 9.6 * z + 4.32)
-
-    def f_zz(z):
-        return z * (20.0 * z**2 - 28.8 * z + 8.64)
 
     domain = Rectangle(complex(-2, -2), complex(2, 2))
 
@@ -69,9 +59,6 @@ class KVB141(Problem):
     def f_z(z):
         return 2 * (z - 0.1) * (z - np.sqrt(3)) + (z - np.sqrt(3)) ** 2 + 1
 
-    def f_zz(z):
-        return 6 * z - 4 * np.sqrt(3) - 0.2
-
     zeros = [10e-2, sqrt(3) + 1j, sqrt(3) - 1j]
     zeros_multiplicities = [1, 1, 1]
 
@@ -84,9 +71,6 @@ class KVB142(Problem):
 
     def f_z(z):
         return -2 * z * np.sin(z) + 3 * np.exp(3 * z) + 2 * np.cos(z)
-
-    def f_zz(z):
-        return -2 * z * np.cos(z) + 9 * np.exp(3 * z) - 4 * np.sin(z)
 
     zeros = [
         0,
@@ -112,17 +96,6 @@ class KVB143(Problem):
             + z * np.cos(z)
             + 48 * z
             + np.sin(z)
-        )
-
-    def f_zz(z):
-        return (
-            30 * z**4
-            - 200 * z**3
-            + 420 * z**2
-            - z * np.sin(z)
-            - 300 * z
-            + 2 * np.cos(z)
-            + 48
         )
 
     zeros = [
@@ -156,39 +129,6 @@ class KVB144(Problem):
                 + 2 * z * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
                 + (2 * z - 4) * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
             )
-        )
-
-    def f_zz(z):
-        return (
-            z**2
-            * (z - 2) ** 2
-            * (
-                6 * z
-                - 4 * np.exp(2 * z) * np.sin(z)
-                + 3 * np.exp(2 * z) * np.cos(z)
-                + np.sin(z)
-            )
-            + 4
-            * z**2
-            * (z - 2)
-            * (
-                3 * z**2
-                - np.exp(2 * z) * np.sin(z)
-                + 2 * np.exp(2 * z) * np.cos(z)
-                - np.cos(z)
-            )
-            + 2 * z**2 * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
-            + 4
-            * z
-            * (z - 2) ** 2
-            * (
-                3 * z**2
-                - np.exp(2 * z) * np.sin(z)
-                + 2 * np.exp(2 * z) * np.cos(z)
-                - np.cos(z)
-            )
-            + 8 * z * (z - 2) * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
-            + 2 * (z - 2) ** 2 * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
         )
 
     zeros = [
@@ -231,19 +171,6 @@ class KVB145(Problem):
             - 10628640
         )
 
-    def f_zz(z):
-        return (
-            90 * z**8
-            - 3960 * z**7
-            + 73920 * z**6
-            - 762300 * z**5
-            + 4733190 * z**4
-            - 18041100 * z**3
-            + 41003160 * z**2
-            - 50457000 * z
-            + 25507152
-        )
-
     zeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     zeros_multiplicities = np.ones_like(zeros)
     domain = Rectangle(complex(-1, -1), complex(11, 1))
@@ -255,9 +182,6 @@ class KVB151(Problem):
 
     def f_z(z):
         return -2 * z * np.sin(z) + 3 * np.exp(3 * z) + 2 * np.cos(z)
-
-    def f_zz(z):
-        return -2 * z * np.cos(z) + 9 * np.exp(3 * z) - 4 * np.sin(z)
 
     zeros = (
         [
@@ -284,17 +208,6 @@ class KVB152(Problem):
             + z * np.cos(z)
             + 48 * z
             + np.sin(z)
-        )
-
-    def f_zz(z):
-        return (
-            30 * z**4
-            - 200 * z**3
-            + 420 * z**2
-            - z * np.sin(z)
-            - 300 * z
-            + 2 * np.cos(z)
-            + 48
         )
 
     zeros = [
@@ -330,39 +243,6 @@ class KVB153(Problem):
             )
         )
 
-    def f_zz(z):
-        return (
-            z**2
-            * (z - 2) ** 2
-            * (
-                6 * z
-                - 4 * np.exp(2 * z) * np.sin(z)
-                + 3 * np.exp(2 * z) * np.cos(z)
-                + np.sin(z)
-            )
-            + 4
-            * z**2
-            * (z - 2)
-            * (
-                3 * z**2
-                - np.exp(2 * z) * np.sin(z)
-                + 2 * np.exp(2 * z) * np.cos(z)
-                - np.cos(z)
-            )
-            + 2 * z**2 * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
-            + 4
-            * z
-            * (z - 2) ** 2
-            * (
-                3 * z**2
-                - np.exp(2 * z) * np.sin(z)
-                + 2 * np.exp(2 * z) * np.cos(z)
-                - np.cos(z)
-            )
-            + 8 * z * (z - 2) * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
-            + 2 * (z - 2) ** 2 * (z**3 + np.exp(2 * z) * np.cos(z) - np.sin(z) - 1)
-        )
-
     zeros = [
         0,
         2,
@@ -389,19 +269,6 @@ class KVB331(Problem):
             + 18 / (z**3 * (z - 1) ** 2 * (z**2 + 9) ** 2)
         )
 
-    def f_zz(z):
-        return (
-            -z * np.sin(z)
-            + 2 * np.cos(z)
-            + 9 * np.exp(-3 * z)
-            + 8 / ((z - 1) * (z**2 + 9) ** 3)
-            + 4 / (z * (z - 1) ** 2 * (z**2 + 9) ** 2)
-            + 6 / (z**2 * (z - 1) * (z**2 + 9) ** 2)
-            + 2 / (z**2 * (z - 1) ** 3 * (z**2 + 9))
-            + 4 / (z**3 * (z - 1) ** 2 * (z**2 + 9))
-            + 6 / (z**4 * (z - 1) * (z**2 + 9))
-        )
-
     domain = Rectangle(complex(-1, -1), complex(1.1, 1.1))
 
     zeros = [0.97843635600921, 0.16974891913248, -0.13327146070751]
@@ -423,14 +290,6 @@ class ExampleHolomorphic(Problem):
             + 12 * z**11
             + 60 * np.sin(12 * z) * np.sin(20 * z)
             - 100 * np.cos(12 * z) * np.cos(20 * z)
-        )
-
-    def f_zz(z):
-        return 2 * (
-            1225 * z**48
-            + 66 * z**10
-            + 1200 * np.sin(12 * z) * np.cos(20 * z)
-            + 1360 * np.sin(20 * z) * np.cos(12 * z)
         )
 
     domain = Rectangle(complex(-20.3, -20.3), complex(20.7, 20.7))
@@ -457,18 +316,6 @@ class SimpleRational(Problem):
             )
             / (z + 1j) ** 2
         )
-
-    def f_zz(z):
-        return (
-            20 * z**6
-            + z**5 * (24 + 24 * 1j)
-            + z**4 * (24 + 36 * 1j)
-            + z**3 * (16 + 24 * 1j)
-            + z**2 * (12 + 24 * 1j)
-            + 24 * z
-            + 8
-            - 12 * 1j
-        ) / (z**3 + 3 * 1j * z**2 - 3 * z - 1j)
 
     domain = Rectangle(complex(-2, -2), complex(2, 2))
 

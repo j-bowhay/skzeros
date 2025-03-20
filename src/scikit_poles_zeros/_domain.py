@@ -117,17 +117,15 @@ class Rectangle(Domain):
     def plot(self, ax): ...
 
 
-def _subdivide_domain(domain, f, f_z, f_zz, max_poles_zeros):
+def _subdivide_domain(domain, f, f_z, max_arg_principle):
     queue = deque(domain)
     while len(queue) > 0:
         current_domain = queue.popleft()
 
         # 1. Compute the combined number of poles and zeros in the domain
-        def second_log_derivative(z):
-            return (f_zz(z) / f(z)) - (f_z(z) / f(z)) ** 2
 
-        n_poles_zeros = current_domain.contour_integral(second_log_derivative)
+        arg_principle = current_domain.argument_principle(f, f_z)
         # 2. Subdivide and repeat if this number is too high
-        if n_poles_zeros > max_poles_zeros:
+        if arg_principle > max_arg_principle:
             current_domain.subdivide()
             queue.append(current_domain.children)
