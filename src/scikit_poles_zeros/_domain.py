@@ -38,9 +38,10 @@ class Domain(ABC):
         method: Literal["gk21", "tanhsinh"] = "gk21",
         quadrature_args=None,
     ):
-        res = self.contour_integral(
-            lambda z: f_z(z) / f(z), method=method, quadrature_args=quadrature_args
-        )
+        with np.errstate(invalid="ignore", divide="ignore"):
+            res = self.contour_integral(
+                lambda z: f_z(z) / f(z), method=method, quadrature_args=quadrature_args
+            )
         res.integral /= complex(0, 2 * pi)
         return res
 
