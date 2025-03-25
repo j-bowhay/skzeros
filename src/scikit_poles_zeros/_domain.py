@@ -148,14 +148,14 @@ class Rectangle(Domain):
 
 
 def _subdivide_domain(domain, f, f_z, max_arg_principle):
-    queue = deque(domain)
+    queue = deque([domain])
     while len(queue) > 0:
         current_domain = queue.popleft()
 
         # 1. Compute the combined number of poles and zeros in the domain
-
         arg_principle = current_domain.argument_principle(f, f_z)
+
         # 2. Subdivide and repeat if this number is too high
-        if arg_principle > max_arg_principle:
+        if arg_principle.integral > max_arg_principle:
             current_domain.subdivide()
-            queue.append(current_domain.children)
+            queue.extend(current_domain.children)

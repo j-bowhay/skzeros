@@ -57,9 +57,14 @@ class TestRectangle:
             d.contour_integral(lambda z: z, method="cheese")
 
     @pytest.mark.parametrize("problem", problems.all)
-    def test_arg_principle(self, problem: problems.Problem):
+    @pytest.mark.parametrize("method", ["gk21", "tanhsinh"])
+    def test_arg_principle(self, problem: problems.Problem, method):
+        arg = {"maxlevel": 20} if method == "tanhsinh" else {}
+        res = problem.domain.argument_principle(
+            problem.f, problem.f_z, method=method, quadrature_args=arg
+        )
         assert_allclose(
-            problem.domain.argument_principle(problem.f, problem.f_z).integral,
+            res.integral,
             problem.expected_arg_principle(),
             atol=1e-12,
         )
