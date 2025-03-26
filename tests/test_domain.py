@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose, assert_equal
 
-from scikit_poles_zeros._domain import Rectangle
+from scikit_poles_zeros._domain import Rectangle, _subdivide_domain
 
 from . import problems
 
@@ -68,3 +68,22 @@ class TestRectangle:
             problem.expected_arg_principle(),
             atol=1e-12,
         )
+
+
+class TestSubdivideDomain:
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
+    @pytest.mark.parametrize(
+        "f",
+        [
+            lambda z: z,
+            lambda z: z - 0.5,
+            lambda z: z - 1,
+            lambda z: z - 0.5j,
+            lambda z: z - 1j,
+            lambda z: z - 1 - 1j,
+        ],
+    )
+    def test_zero_on_boundary(self, f):
+        r = Rectangle(0, complex(1, 1))
+        with pytest.raises(RuntimeError, match="boundary"):
+            _subdivide_domain(r, f, f_z=lambda _: 1.0, max_arg_principle=2)

@@ -169,11 +169,19 @@ class Rectangle(Domain):
 
 def _subdivide_domain(domain, f, f_z, max_arg_principle):
     queue = deque([domain])
+    i = 0
     while len(queue) > 0:
+        i += 1
         current_domain = queue.popleft()
 
         # 1. Compute the combined number of poles and zeros in the domain
         arg_principle = current_domain.argument_principle(f, f_z)
+        if any(~arg_principle.success) and i == 1:
+            msg = (
+                "Zero/Pole detected on the boundary of the provided region. Please "
+                "adjust region."
+            )
+            raise RuntimeError(msg)
 
         # 2. Subdivide and repeat if this number is too high
         if arg_principle.integral > max_arg_principle:
