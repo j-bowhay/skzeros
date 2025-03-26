@@ -5,6 +5,7 @@ from typing import Literal
 
 import numpy as np
 from matplotlib import patches
+from scipy._lib._util import _RichResult
 from scipy.integrate import tanhsinh
 
 from scikit_poles_zeros._integrate import _quadvec
@@ -104,7 +105,25 @@ class Rectangle(Domain):
         if method == "tanhsinh":
             res = tanhsinh(f_wrapped, 0, 1, args=(a, b), **quadrature_args)
         elif method == "gk21":
-            res = _quadvec(f_wrapped, 0, 1, args=(a, b), **quadrature_args)
+            success = []
+            status = []
+            integral = []
+            error = []
+            nfev = []
+            for args in zip(a, b, strict=False):
+                res_i = _quadvec(f_wrapped, 0, 1, args=args, **quadrature_args)
+                success.append(res_i.success)
+                status.append(res_i.status)
+                integral.append(res_i.integral)
+                error.append(res_i.error)
+                nfev.append(res_i.nfev)
+            res = _RichResult(
+                success=np.asarray(success),
+                status=np.asarray(status),
+                integral=np.asarray(integral),
+                error=np.asarray(error),
+                nfev=np.asarray(nfev),
+            )
         else:
             msg = "Invalid `method`"
             raise ValueError(msg)

@@ -40,8 +40,8 @@ class TestRectangle:
     def test_contour_integral(self, f, bl, tr, expected, method):
         d = Rectangle(bl, tr)
         res = d.contour_integral(f, method=method)
-        assert np.all(res.success)
-        assert_equal(res.status, 0)
+        assert_equal(res.success, np.ones_like(res.integral, dtype=np.bool))
+        assert_equal(res.status, np.zeros_like(res.integral))
         assert_allclose(res.integral, expected, atol=1e-10)
 
     def test_contour_integral_args_pass_through(self):
