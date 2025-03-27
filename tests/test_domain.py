@@ -87,3 +87,10 @@ class TestSubdivideDomain:
         r = Rectangle(0, complex(1, 1))
         with pytest.raises(RuntimeError, match="boundary"):
             _subdivide_domain(r, f, f_z=lambda _: 1.0, max_arg_principle=2)
+
+    def test_non_integer_argument_principle(self):
+        r = Rectangle(complex(-1, -1), complex(1, 1))
+        with pytest.raises(RuntimeError, match="Non-integer"):
+            _subdivide_domain(r, lambda z: z, lambda _: 1.5, max_arg_principle=2)
+        with pytest.raises(RuntimeError, match="Non-integer"):
+            _subdivide_domain(r, lambda z: z, lambda _: 1.5j, max_arg_principle=2)

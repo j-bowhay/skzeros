@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from collections import deque
-from math import pi
+from math import isclose, pi
 from typing import Literal
 
 import numpy as np
@@ -167,7 +167,7 @@ class Rectangle(Domain):
             child.plot(ax)
 
 
-def _subdivide_domain(domain, f, f_z, max_arg_principle):
+def _subdivide_domain(domain, f, f_z, max_arg_principle, quadrature_args=None):
     queue = deque([domain])
     i = 0
     while len(queue) > 0:
@@ -175,11 +175,27 @@ def _subdivide_domain(domain, f, f_z, max_arg_principle):
         current_domain = queue.popleft()
 
         # 1. Compute the combined number of poles and zeros in the domain
-        arg_principle = current_domain.argument_principle(f, f_z)
+        arg_principle = current_domain.argument_principle(
+            f, f_z, quadrature_args=quadrature_args
+        )
         if any(~arg_principle.success) and i == 1:
             msg = (
                 "Zero/Pole detected on the boundary of the provided region. Please "
                 "adjust region."
+            )
+            raise RuntimeError(msg)
+
+        if not (
+            isclose(
+                arg_principle.integral.real,
+                int(arg_principle.integral.real),
+                abs_tol=1e-3,
+            )
+            and isclose(arg_principle.integral.imag, 0, abs_tol=1e-3)
+        ):
+            msg = (
+                "Non-integer value of the argument principle computed. Try "
+                "tightening quadrature tolerance and check that `f` is holomorphic."
             )
             raise RuntimeError(msg)
 
