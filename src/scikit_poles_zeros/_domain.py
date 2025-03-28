@@ -14,7 +14,10 @@ from scikit_poles_zeros._integrate import _quadvec
 class Domain(ABC):
     """Abstract Domain"""
 
-    __slots__ = ()
+    __slots__ = ("parent",)
+
+    def __init__(self, *, parent=None):
+        self.parent = parent
 
     @property
     @abstractmethod
@@ -52,7 +55,7 @@ class Rectangle(Domain):
 
     __slots__ = "_bottom_left", "_children", "_corners", "_top_right"
 
-    def __init__(self, bottom_left, top_right, /):
+    def __init__(self, bottom_left, top_right, /, *, parent=None):
         # check that top_right is to the right and above bottom left in the complex
         # plane
         if bottom_left.real >= top_right.real or bottom_left.imag >= top_right.imag:
@@ -73,6 +76,8 @@ class Rectangle(Domain):
         # children created if region is subdivided
         # 0th entry left/top, 1st entry right/bottom
         self._children = []
+
+        super().__init__(parent=parent)
 
     @property
     def bottom_left(self):
@@ -138,17 +143,21 @@ class Rectangle(Domain):
 
         if diag.real >= diag.imag:  # split vertically
             self.children.append(
-                Rectangle(self.bottom_left, self.top_right - diag.real / 2)
+                Rectangle(self.bottom_left, self.top_right - diag.real / 2, parent=self)
             )
             self.children.append(
-                Rectangle(self.bottom_left + diag.real / 2, self.top_right)
+                Rectangle(self.bottom_left + diag.real / 2, self.top_right, parent=self)
             )
         else:  # split horizontally
             self.children.append(
-                Rectangle(self.bottom_left, self.top_right - 1j * diag.imag / 2)
+                Rectangle(
+                    self.bottom_left, self.top_right - 1j * diag.imag / 2, parent=self
+                )
             )
             self.children.append(
-                Rectangle(self.bottom_left + 1j * diag.imag / 2, self.top_right)
+                Rectangle(
+                    self.bottom_left + 1j * diag.imag / 2, self.top_right, parent=self
+                )
             )
 
     def plot(self, ax):
@@ -178,12 +187,20 @@ def _subdivide_domain(domain, f, f_z, max_arg_principle, quadrature_args=None):
         arg_principle = current_domain.argument_principle(
             f, f_z, quadrature_args=quadrature_args
         )
-        if any(~arg_principle.success) and i == 1:
-            msg = (
-                "Zero/Pole detected on the boundary of the provided region. Please "
-                "adjust region."
-            )
-            raise RuntimeError(msg)
+        if any(~arg_principle.success):
+            if i == 1:
+                # if integration fails on the first iteration then we know that there
+                # is a zero or pole on the boundary of the region, so we reject this
+                msg = (
+                    "Zero/Pole detected on the boundary of the provided region. Please "
+                    "adjust region."
+                )
+                raise RuntimeError(msg)
+            # otherwise we know the edge that we previously inserted passes through a
+            # zero or pole so we need to try moving that edge
+            # 1. Find the parent region
+            # 2. Delete its children and remove them from the queue
+            # 3. Resplit the region and add to the front of the queue
 
         if not (
             isclose(

@@ -20,6 +20,12 @@ class TestRectangle:
         assert r.top_right == tr
         assert r.corners == (bl, 12 + 2j, tr, 1 + 10j)
 
+    def test_parent(self):
+        r = Rectangle(0, complex(1, 1))
+        r.subdivide()
+        for child in r.children:
+            assert child.parent is r
+
     @pytest.mark.parametrize(
         "attr", ["top_right", "bottom_left", "children", "corners"]
     )
