@@ -53,7 +53,7 @@ class Domain(ABC):
 class Rectangle(Domain):
     """Rectangle region in the complex plane."""
 
-    __slots__ = "_bottom_left", "_children", "_corners", "_top_right"
+    __slots__ = "_bottom_left", "_corners", "_top_right", "children"
 
     def __init__(self, bottom_left, top_right, /, *, parent=None):
         # check that top_right is to the right and above bottom left in the complex
@@ -75,7 +75,7 @@ class Rectangle(Domain):
 
         # children created if region is subdivided
         # 0th entry left/top, 1st entry right/bottom
-        self._children = []
+        self.children = []
 
         super().__init__(parent=parent)
 
@@ -86,10 +86,6 @@ class Rectangle(Domain):
     @property
     def top_right(self):
         return self._top_right
-
-    @property
-    def children(self):
-        return self._children
 
     @property
     def corners(self):
@@ -138,25 +134,40 @@ class Rectangle(Domain):
         res.integral = np.sum(res.integral)
         return res
 
-    def subdivide(self):
+    def subdivide(self, offset=0):
+        if not abs(offset) < 0.5:
+            msg = "Offset must be between 0 and 1"
+            raise ValueError(msg)
         diag = self.top_right - self.bottom_left
 
         if diag.real >= diag.imag:  # split vertically
             self.children.append(
-                Rectangle(self.bottom_left, self.top_right - diag.real / 2, parent=self)
-            )
-            self.children.append(
-                Rectangle(self.bottom_left + diag.real / 2, self.top_right, parent=self)
-            )
-        else:  # split horizontally
-            self.children.append(
                 Rectangle(
-                    self.bottom_left, self.top_right - 1j * diag.imag / 2, parent=self
+                    self.bottom_left,
+                    self.top_right - diag.real * (0.5 + offset),
+                    parent=self,
                 )
             )
             self.children.append(
                 Rectangle(
-                    self.bottom_left + 1j * diag.imag / 2, self.top_right, parent=self
+                    self.bottom_left + diag.real * (0.5 - offset),
+                    self.top_right,
+                    parent=self,
+                )
+            )
+        else:  # split horizontally
+            self.children.append(
+                Rectangle(
+                    self.bottom_left,
+                    self.top_right - 1j * diag.imag * (0.5 + offset),
+                    parent=self,
+                )
+            )
+            self.children.append(
+                Rectangle(
+                    self.bottom_left + 1j * diag.imag * (0.5 - offset),
+                    self.top_right,
+                    parent=self,
                 )
             )
 
@@ -176,18 +187,23 @@ class Rectangle(Domain):
             child.plot(ax)
 
 
-def _subdivide_domain(domain, f, f_z, max_arg_principle, quadrature_args=None):
+def _subdivide_domain(
+    domain, f, f_z, max_arg_principle, quadrature_args=None, maxiter=50
+):
     queue = deque([domain])
     i = 0
     while len(queue) > 0:
         i += 1
+        if i > maxiter:
+            msg = "Max number of iterations reached"
+            raise RuntimeError(msg)
         current_domain = queue.popleft()
 
         # 1. Compute the combined number of poles and zeros in the domain
         arg_principle = current_domain.argument_principle(
             f, f_z, quadrature_args=quadrature_args
         )
-        if any(~arg_principle.success):
+        if np.any(~arg_principle.success):
             if i == 1:
                 # if integration fails on the first iteration then we know that there
                 # is a zero or pole on the boundary of the region, so we reject this
@@ -199,8 +215,18 @@ def _subdivide_domain(domain, f, f_z, max_arg_principle, quadrature_args=None):
             # otherwise we know the edge that we previously inserted passes through a
             # zero or pole so we need to try moving that edge
             # 1. Find the parent region
+            parent = current_domain.parent
             # 2. Delete its children and remove them from the queue
+            for child in parent.children:
+                if child in queue:
+                    queue.remove(child)
+            parent.children = []
             # 3. Resplit the region and add to the front of the queue
+            parent.subdivide(
+                offset=0.111111
+            )  # hardcode for now, possibly choose randomly later
+            queue.extend(parent.children)
+            continue
 
         if not (
             isclose(
@@ -217,6 +243,6 @@ def _subdivide_domain(domain, f, f_z, max_arg_principle, quadrature_args=None):
             raise RuntimeError(msg)
 
         # 2. Subdivide and repeat if this number is too high
-        if arg_principle.integral > max_arg_principle:
+        if abs(arg_principle.integral) > max_arg_principle:
             current_domain.subdivide()
             queue.extend(current_domain.children)
