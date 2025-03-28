@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from collections import deque
-from math import isclose, pi
+from math import pi
 from typing import Literal
 
 import numpy as np
@@ -229,12 +229,8 @@ def _subdivide_domain(
             continue
 
         if not (
-            isclose(
-                arg_principle.integral.real,
-                int(arg_principle.integral.real),
-                abs_tol=1e-3,
-            )
-            and isclose(arg_principle.integral.imag, 0, abs_tol=1e-3)
+            abs(arg_principle.integral.real - round(arg_principle.integral.real)) < 1e-3
+            and abs(arg_principle.integral.imag) < 1e-3
         ):
             msg = (
                 "Non-integer value of the argument principle computed. Try "

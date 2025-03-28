@@ -98,3 +98,16 @@ class TestSubdivideDomain:
             _subdivide_domain(r, lambda z: z, lambda _: 1.5, max_arg_principle=2)
         with pytest.raises(RuntimeError, match="Non-integer"):
             _subdivide_domain(r, lambda z: z, lambda _: 1.5j, max_arg_principle=2)
+
+    @pytest.mark.parametrize("problem", problems.with_known_roots_poles)
+    def test_successful_subdivision(self, problem):
+        _subdivide_domain(
+            problem.domain,
+            problem.f,
+            problem.f_z,
+            max_arg_principle=max(
+                max(problem.zeros_multiplicities, default=0),
+                max(problem.poles_multiplicities, default=0),
+            )
+            + 0.1,
+        )
