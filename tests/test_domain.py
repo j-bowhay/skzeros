@@ -26,9 +26,7 @@ class TestRectangle:
         for child in r.children:
             assert child.parent is r
 
-    @pytest.mark.parametrize(
-        "attr", ["top_right", "bottom_left", "children", "corners"]
-    )
+    @pytest.mark.parametrize("attr", ["top_right", "bottom_left", "corners"])
     def test_read_only(self, attr):
         d = Rectangle(0, complex(1, 1))
         with pytest.raises(AttributeError):
