@@ -134,9 +134,9 @@ class Rectangle(Domain):
         res.integral = np.sum(res.integral)
         return res
 
-    def subdivide(self, offset=0):
+    def subdivide(self, *, offset=0):
         if not abs(offset) < 0.5:
-            msg = "Offset must be between 0 and 1"
+            msg = "Offset must be between -0.5 and 0.5"
             raise ValueError(msg)
         diag = self.top_right - self.bottom_left
 
