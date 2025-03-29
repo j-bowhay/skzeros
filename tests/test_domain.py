@@ -73,6 +73,11 @@ class TestRectangle:
             atol=1e-12,
         )
 
+    def test_invalid_offset(self):
+        r = Rectangle(0, complex(1, 1))
+        with pytest.raises(ValueError, match="Offset"):
+            r.subdivide(offset=1)
+
 
 class TestSubdivideDomain:
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
