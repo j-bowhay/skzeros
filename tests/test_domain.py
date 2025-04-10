@@ -106,13 +106,41 @@ class TestSubdivideDomain:
 
     @pytest.mark.parametrize("problem", problems.with_known_roots_poles)
     def test_successful_subdivision(self, problem):
+        r = problem.domain
+        max_arg = max(
+            max(problem.zeros_multiplicities, default=0),
+            max(problem.poles_multiplicities, default=0),
+        )
         _subdivide_domain(
-            problem.domain,
+            r,
             problem.f,
             problem.f_z,
-            max_arg_principle=max(
-                max(problem.zeros_multiplicities, default=0),
-                max(problem.poles_multiplicities, default=0),
-            )
-            + 0.1,
+            max_arg_principle=max_arg + 0.1,
         )
+        leafs = get_leaf_regions(r)
+        for leaf in leafs:
+            actual = 0
+            for zero in problem.zeros:
+                if in_rectangle(zero, leaf.bottom_left, leaf.top_right):
+                    actual += 1
+            for pole in problem.poles:
+                if in_rectangle(pole, leaf.bottom_left, leaf.top_right):
+                    actual -= 1
+            assert abs(actual) <= max_arg
+
+
+def get_leaf_regions(r):
+    leafs = []
+    for child in r.children:
+        if len(child.children) == 0:
+            leafs.append(child)
+        else:
+            leafs.extend(get_leaf_regions(child))
+    return leafs
+
+
+def in_rectangle(z, bottom_left, top_right):
+    return (
+        bottom_left.real < z.real < top_right.real
+        and bottom_left.imag < z.imag < top_right.imag
+    )
