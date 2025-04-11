@@ -14,7 +14,7 @@ from scikit_poles_zeros._integrate import _quadvec
 class Domain(ABC):
     """Abstract Domain"""
 
-    __slots__ = ("parent",)
+    __slots__ = ("_arg_principle", "parent")
 
     def __init__(self, *, parent=None):
         self.parent = parent
@@ -191,6 +191,7 @@ def _subdivide_domain(
     domain, f, f_z, max_arg_principle, quadrature_args=None, maxiter=50
 ):
     queue = deque([domain])
+    leafs = []
     i = 0
     while len(queue) > 0:
         i += 1
@@ -220,6 +221,8 @@ def _subdivide_domain(
             for child in parent.children:
                 if child in queue:
                     queue.remove(child)
+                if child in leafs:
+                    leafs.remove(child)
             parent.children = []
             # 3. Resplit the region and add to the front of the queue
             parent.subdivide(
@@ -242,3 +245,10 @@ def _subdivide_domain(
         if abs(arg_principle.integral) > max_arg_principle:
             current_domain.subdivide()
             queue.extend(current_domain.children)
+        else:  # Accept!
+            leafs.append(current_domain)
+            current_domain._arg_principle = (
+                round(arg_principle.integral.real)
+                + round(arg_principle.integral.imag) * 1j
+            )
+    return leafs

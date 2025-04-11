@@ -111,32 +111,41 @@ class TestSubdivideDomain:
             max(problem.zeros_multiplicities, default=0),
             max(problem.poles_multiplicities, default=0),
         )
-        _subdivide_domain(
+        leafs = _subdivide_domain(
             r,
             problem.f,
             problem.f_z,
             max_arg_principle=max_arg + 0.1,
         )
-        leafs = get_leaf_regions(r)
-        for leaf in leafs:
+        leafs_expected = get_leaf_regions(r)
+        assert len(leafs) == len(leafs_expected)
+        for leaf in leafs_expected:
+            assert leaf in leafs
             actual = 0
-            for zero in problem.zeros:
+            for zero, multiplicity in zip(
+                problem.zeros, problem.zeros_multiplicities, strict=True
+            ):
                 if in_rectangle(zero, leaf.bottom_left, leaf.top_right):
-                    actual += 1
-            for pole in problem.poles:
+                    actual += multiplicity
+            for pole, multiplicity in zip(
+                problem.poles, problem.poles_multiplicities, strict=True
+            ):
                 if in_rectangle(pole, leaf.bottom_left, leaf.top_right):
-                    actual -= 1
+                    actual -= multiplicity
             assert abs(actual) <= max_arg
+            assert actual == leaf._arg_principle
 
 
 def get_leaf_regions(r):
-    leafs = []
-    for child in r.children:
-        if len(child.children) == 0:
-            leafs.append(child)
-        else:
-            leafs.extend(get_leaf_regions(child))
-    return leafs
+    if len(r.children) >= 1:
+        leafs = []
+        for child in r.children:
+            if len(child.children) == 0:
+                leafs.append(child)
+            else:
+                leafs.extend(get_leaf_regions(child))
+        return leafs
+    return [r]
 
 
 def in_rectangle(z, bottom_left, top_right):
