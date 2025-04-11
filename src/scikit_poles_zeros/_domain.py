@@ -188,8 +188,10 @@ class Rectangle(Domain):
 
 
 def _subdivide_domain(
-    domain, f, f_z, max_arg_principle, quadrature_args=None, maxiter=50
+    domain, f, f_z, max_arg_principle, quadrature_args=None, maxiter=50, rng=None
 ):
+    if rng is None:
+        rng = np.random.default_rng()
     queue = deque([domain])
     leafs = []
     i = 0
@@ -226,8 +228,9 @@ def _subdivide_domain(
             parent.children = []
             # 3. Resplit the region and add to the front of the queue
             parent.subdivide(
-                offset=0.111111
-            )  # hardcode for now, possibly choose randomly later
+                offset=((0.1 - 0.01) * rng.random(1)[0] + 0.01)
+                * (-1) ** rng.integers(1, 2, endpoint=True)
+            )
             queue.extend(parent.children)
             continue
 
