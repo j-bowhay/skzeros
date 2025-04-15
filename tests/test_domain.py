@@ -78,6 +78,16 @@ class TestRectangle:
         with pytest.raises(ValueError, match="Offset"):
             r.subdivide(offset=1)
 
+    def test_sample_boundary_invalid_t(self):
+        t = np.asarray([0, 0.5, 0.9, 1, 1.5])
+        r = Rectangle(0, complex(1, 1))
+        with pytest.raises(ValueError, match="must lie"):
+            r.sample_boundary(t)
+
+    def test_sample_boundary(self):
+        r = Rectangle(0, complex(1, 1))
+        assert_equal(r.sample_boundary([0, 0.25, 0.5, 0.75]), r.corners)
+
 
 class TestSubdivideDomain:
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")

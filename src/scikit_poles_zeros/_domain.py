@@ -49,6 +49,14 @@ class Domain(ABC):
         res.integral /= complex(0, 2 * pi)
         return res
 
+    @abstractmethod
+    def sample_boundary(self, t):
+        t = np.asarray(t)
+        if not np.all((t >= 0.0) & (t < 1.0)):
+            msg = "t must lie in the interval [0,1)"
+            raise ValueError(msg)
+        return t
+
 
 class Rectangle(Domain):
     """Rectangle region in the complex plane."""
@@ -185,6 +193,24 @@ class Rectangle(Domain):
         )
         for child in self.children:
             child.plot(ax)
+
+    def sample_boundary(self, t):
+        t = super().sample_boundary(t)
+        out = np.empty_like(t, dtype=np.complex128)
+        corners = self.corners
+        edge1 = (t >= 0.0) & (t < 0.25)
+        edge2 = (t >= 0.25) & (t < 0.5)
+        edge3 = (t >= 0.5) & (t < 0.75)
+        edge4 = (t >= 0.75) & (t < 1.0)
+        t_1 = t[edge1] / 0.25
+        t_2 = (t[edge2] - 0.25) / 0.25
+        t_3 = (t[edge3] - 0.5) / 0.25
+        t_4 = (t[edge4] - 0.75) / 0.25
+        out[edge1] = corners[0] * (1 - t_1) + corners[1] * t_1
+        out[edge2] = corners[1] * (1 - t_2) + corners[2] * t_2
+        out[edge3] = corners[2] * (1 - t_3) + corners[3] * t_3
+        out[edge4] = corners[3] * (1 - t_4) + corners[0] * t_4
+        return out
 
 
 def _subdivide_domain(
