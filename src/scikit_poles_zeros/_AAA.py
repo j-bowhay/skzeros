@@ -2,7 +2,7 @@ import numpy as np
 import scipy
 
 
-def AAA(r, rtol=1e-12, max_terms=100): ...
+def AAA(r, rtol=1e-12, max_terms=100, initial_points=25): ...
 
 
 def poles_residues(z, f, w, residue=False):
@@ -26,3 +26,36 @@ def poles_residues(z, f, w, residue=False):
             Ddiff = -((1 / np.subtract.outer(poles, z)) ** 2) @ w
             return poles, N / Ddiff
     return poles
+
+
+def evaluate(z, f, w, Z):
+    # evaluate rational function in barycentric form.
+    Z = np.asarray(Z)
+    zv = np.ravel(Z)
+
+    weights = w[..., np.newaxis]
+
+    # Cauchy matrix
+    # Ignore errors due to inf/inf at support points, these will be fixed later
+    with np.errstate(invalid="ignore", divide="ignore"):
+        CC = 1 / np.subtract.outer(zv, z)
+        # Vector of values
+        r = CC @ (weights * f) / (CC @ weights)
+
+    # Deal with input inf: `r(inf) = lim r(z) = sum(w*f) / sum(w)`
+    if np.any(np.isinf(zv)):
+        r[np.isinf(zv)] = np.sum(weights * f) / np.sum(weights)
+
+    # Deal with NaN
+    ii = np.nonzero(np.isnan(r))[0]
+    for jj in ii:
+        if np.isnan(zv[jj]) or not np.any(zv[jj] == z):
+            # r(NaN) = NaN is fine.
+            # The second case may happen if `r(zv[ii]) = 0/0` at some point.
+            pass
+        else:
+            # Clean up values `NaN = inf/inf` at support points.
+            # Find the corresponding node and set entry to correct value:
+            r[jj] = f[zv[jj] == z].squeeze()
+
+    return np.reshape(r, Z.shape)
