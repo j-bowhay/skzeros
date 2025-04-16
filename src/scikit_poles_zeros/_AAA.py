@@ -2,7 +2,29 @@ import numpy as np
 import scipy
 
 
-def AAA(r, rtol=1e-12, max_terms=100, initial_points=25): ...
+def AAA(f, r, rtol=1e-12):
+    # Initial support points
+    S = r.sample_boundary(
+        [0, 0.25, 0.5, 0.75]
+    )  # Corners of the square, TODO generalise
+    while True:
+        m = S.size
+        X = XS(S, max(3, 16 - m))
+        C = 1 / np.subtract.outer(X, S)
+        fS = f(S)
+        fX = f(X)
+        A = np.subtract.outer(fX, fS) * C
+        _, _, V = scipy.linalg.svd(
+            A, full_matrices=(A.shape[0] <= A.shape[1]), check_finite=False
+        )
+        w = V.conj()[-1, :]
+        R = C @ (w * fS) / C @ w
+        err = np.linalg.norm(fX - R, p=np.inf)
+        fmax = np.linalg.norm(np.concat(fS, fX), p=np.inf)
+        if err < rtol * fmax:
+            return S, fS, w
+        j = np.argmax(np.abs(fX - R))
+        S = np.append(S, X[j])
 
 
 def XS(S, p):
