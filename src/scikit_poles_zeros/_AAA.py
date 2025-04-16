@@ -18,9 +18,9 @@ def AAA(f, r, rtol=1e-12):
             A, full_matrices=(A.shape[0] <= A.shape[1]), check_finite=False
         )
         w = V.conj()[-1, :]
-        R = C @ (w * fS) / C @ w
-        err = np.linalg.norm(fX - R, p=np.inf)
-        fmax = np.linalg.norm(np.concat(fS, fX), p=np.inf)
+        R = (C @ (w * fS)) / (C @ w)
+        err = np.linalg.norm(fX - R, ord=np.inf)
+        fmax = np.linalg.norm(np.concat((fS, fX)), ord=np.inf)
         if err < rtol * fmax:
             return S, fS, w
         j = np.argmax(np.abs(fX - R))
