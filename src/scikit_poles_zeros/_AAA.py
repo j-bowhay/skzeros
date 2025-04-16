@@ -5,6 +5,12 @@ import scipy
 def AAA(r, rtol=1e-12, max_terms=100, initial_points=25): ...
 
 
+def XS(S, p):
+    S = np.sort(S)
+    d = np.arange(1, p + 1) / (p + 1)
+    return (S[:-1] + np.multiply.outer(d, np.diff(S))).ravel()
+
+
 def poles_residues(z, f, w, residue=False):
     # poles
     m = w.size
