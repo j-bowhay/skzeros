@@ -160,3 +160,6 @@ Thumbs.db
 
 # Scratch files
 scratch/
+
+# figures
+*.pdf

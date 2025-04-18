@@ -2,14 +2,14 @@ import numpy as np
 import scipy
 
 
-def AAA(f, r, rtol=1e-12):
+def AAA(f, r, rtol=1e-13):
     # Initial support points
     S = r.sample_boundary(
         [0, 0.25, 0.5, 0.75]
     )  # Corners of the square, TODO generalise
     while True:
         m = S.size
-        X = XS(S, max(3, 16 - m))
+        X = XS(S, max(3, 32 - m))
         C = 1 / np.subtract.outer(X, S)
         fS = f(S)
         fX = f(X)
