@@ -56,6 +56,21 @@ def poles_residues(z, f, w, residue=False):
     return poles
 
 
+def zeros(z, f, w):
+    # zeros
+    m = w.size
+    B = np.eye(m + 1, dtype=w.dtype)
+    B[0, 0] = 0
+
+    E = np.zeros_like(B, dtype=np.result_type(w, z, f))
+    E[0, 1:] = w * f
+    E[1:, 0] = 1
+    np.fill_diagonal(E[1:, 1:], z)
+
+    zeros = scipy.linalg.eigvals(E, B)
+    return zeros[np.isfinite(zeros)]
+
+
 def evaluate(z, f, w, Z):
     # evaluate rational function in barycentric form.
     Z = np.asarray(Z)
