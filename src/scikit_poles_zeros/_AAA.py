@@ -5,7 +5,7 @@ import scipy
 def AAA(f, r, rtol=1e-13):
     # Initial support points
     t = np.array([])
-    S = np.array([])  # Corners of the square, TODO generalise
+    S = np.array([])
     while True:
         m = S.size
 
