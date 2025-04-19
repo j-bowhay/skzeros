@@ -1,7 +1,8 @@
 import numpy as np
 from numpy.testing import assert_allclose
 
-from scikit_poles_zeros._AAA import XS
+from scikit_poles_zeros._AAA import AAA, XS
+from scikit_poles_zeros._domain import Rectangle
 
 
 class TestXS:
@@ -27,3 +28,25 @@ class TestXS:
         res = XS([0.25, 0.5, 0.75], 5)
         expected = XS([0, 0.25, 0.5, 0.75, 1], 5)
         assert_allclose(res, expected)
+
+
+class TestAAA:
+    def test_only_on_boundary(self):
+        d = Rectangle(complex(-10, -10), complex(10, 10))
+
+        def f(z):
+            assert np.all(
+                (np.real(z) - 10 < 1e-9)
+                | (np.real(z) + 10 < 1e-9)
+                | (np.imag(z) - 10 < 1e-9)
+                | (np.imag(z) + 10 < 1e-9)
+            )
+            return np.tan(z)
+
+        z, _, _ = AAA(f, d)
+        assert np.all(
+            (np.real(z) == -10)
+            | (np.real(z) == 10)
+            | (np.imag(z) == -10)
+            | (np.imag(z) == 10)
+        )
