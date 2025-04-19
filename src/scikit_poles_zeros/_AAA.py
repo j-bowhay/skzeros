@@ -4,26 +4,34 @@ import scipy
 
 def AAA(f, r, rtol=1e-13):
     # Initial support points
-    S = r.sample_boundary(
-        [0, 0.25, 0.5, 0.75]
-    )  # Corners of the square, TODO generalise
+    t = np.array([])
+    S = np.array([])  # Corners of the square, TODO generalise
     while True:
         m = S.size
-        X = XS(S, max(3, 32 - m))
-        C = 1 / np.subtract.outer(X, S)
-        fS = f(S)
+
+        tm = XS(t, max(3, 32 - m))
+        X = r.sample_boundary(tm)
         fX = f(X)
-        A = np.subtract.outer(fX, fS) * C
-        _, _, V = scipy.linalg.svd(
-            A, full_matrices=(A.shape[0] <= A.shape[1]), check_finite=False
-        )
-        w = V.conj()[-1, :]
-        R = (C @ (w * fS)) / (C @ w)
+        fS = f(S)
+
+        if m == 0:
+            R = np.mean(fX)
+        else:
+            C = 1 / np.subtract.outer(X, S)
+            A = np.subtract.outer(fX, fS) * C
+            _, _, V = scipy.linalg.svd(
+                A, full_matrices=(A.shape[0] <= A.shape[1]), check_finite=False
+            )
+            w = V.conj()[-1, :]
+            R = (C @ (w * fS)) / (C @ w)
+
         err = np.linalg.norm(fX - R, ord=np.inf)
         fmax = np.linalg.norm(np.concat((fS, fX)), ord=np.inf)
         if err < rtol * fmax:
             return S, fS, w
+
         j = np.argmax(np.abs(fX - R))
+        t = np.append(t, tm[j])
         S = np.append(S, X[j])
 
 
