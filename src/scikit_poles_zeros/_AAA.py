@@ -12,6 +12,9 @@ def AAA(f, r, rtol=1e-13):
         tm = XS(t, max(3, 32 - m))
         X = r.sample_boundary(tm)
         fX = f(X)
+        to_keep = (np.isfinite(fX)) & (~np.isnan(fX))
+        X = X[to_keep]
+        fX = fX[to_keep]
         fS = f(S)
 
         if m == 0:
