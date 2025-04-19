@@ -28,6 +28,12 @@ def AAA(f, r, rtol=1e-13):
 
 
 def XS(S, p):
+    # make sure the end points 0 and 1 are included so we sample to the left of the
+    # first support point and to the right of the last support point
+    if 0 not in S:
+        S = np.append(S, 0)
+    if 1 not in S:
+        S = np.append(S, 1)
     S = np.sort(S)
     d = np.arange(1, p + 1) / (p + 1)
     return (S[:-1] + np.multiply.outer(d, np.diff(S))).ravel()
