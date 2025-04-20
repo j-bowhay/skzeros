@@ -43,5 +43,6 @@ savefig.pad_inches : 0.05
 text.usetex : True
 text.latex.preamble : \usepackage{amsmath} \usepackage{amssymb}
 font.size : 10
+axes.titlesize : 10
 font.family : serif
 font.serif : Computer Modern
