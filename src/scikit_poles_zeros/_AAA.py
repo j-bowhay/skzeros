@@ -2,7 +2,7 @@ import numpy as np
 import scipy
 
 
-def AAA(f, r, rtol=1e-13, max_iter=100, initial_samples=32):
+def AAA(f, r, rtol=1e-13, max_iter=100, initial_samples=16):
     # Initial support points
     t = np.array([])
     S = np.array([])
@@ -34,7 +34,7 @@ def AAA(f, r, rtol=1e-13, max_iter=100, initial_samples=32):
         j = np.argmax(np.abs(fX - R))
         t = np.append(t, tm[j])
         S = np.append(S, X[j])
-    msg = f"Iteration limit reached, current error {err}"
+    msg = f"Iteration limit reached, current error {err}, require err {rtol * fmax}"
     raise RuntimeError(msg)
 
 
