@@ -90,6 +90,13 @@ class TestRectangle:
 
 
 class TestSubdivideDomain:
+    def test_existing_children(self):
+        d = Rectangle(0, complex(1, 1))
+        d.children.append(Rectangle(0, complex(0.5, 0.5)))
+
+        with pytest.raises(ValueError, match="children"):
+            _subdivide_domain(d, lambda _: 1, lambda _: 0, 10)
+
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     @pytest.mark.parametrize(
         "f",

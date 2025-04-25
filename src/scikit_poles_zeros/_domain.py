@@ -218,6 +218,11 @@ def _subdivide_domain(
 ):
     if rng is None:
         rng = np.random.default_rng()
+
+    if domain.children != []:
+        msg = "`domain` must not already have children."
+        raise ValueError(msg)
+
     queue = deque([domain])
     leafs = []
     i = 0
