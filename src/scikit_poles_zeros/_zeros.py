@@ -34,9 +34,13 @@ def find_zeros(
         # 1. Get the expected number of poles
         expected = region._arg_principle
         # 2. Apply continuum AAA
-        z, f, w = AAA(lambda z, f=f, f_z=f_z: f_z(z) / f(z), region)
+        support_points, support_values, weights = AAA(
+            lambda z, f=f, f_z=f_z: f_z(z) / f(z), region
+        )
         # 3. Compute poles and residue
-        poles, residue = poles_residues(z, f, w, residue=True)
+        poles, residue = poles_residues(
+            support_points, support_values, weights, residue=True
+        )
         # 4. Discard any out of the region
         bl, tr = region.bottom_left, region.top_right
         to_keep = (
