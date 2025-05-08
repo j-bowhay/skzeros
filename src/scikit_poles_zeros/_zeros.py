@@ -27,12 +27,15 @@ def find_zeros(
         rng=rng,
     )
     queue = deque(regions)
-    zeros = np.array([])  # noqa: F841
-    multiplicities = np.array([])  # noqa: F841
+    zeros = np.array([])
+    multiplicities = np.array([])
     while len(queue) > 0:
         region = queue.popleft()
         # 1. Get the expected number of poles
         expected = region._arg_principle
+        # if there are no zeros then there is no work to be done!
+        if np.isclose(expected, 0, atol=1e-3):
+            continue
         # 2. Apply continuum AAA
         support_points, support_values, weights = AAA(
             lambda z, f=f, f_z=f_z: f_z(z) / f(z), region
@@ -55,4 +58,16 @@ def find_zeros(
         # 6. Compare against the argument principle and subdivide further if needed
         actual = np.sum(residue[to_keep])
 
-        print(f"{expected=}, {actual=}")  # noqa: T201
+        if np.isclose(actual, expected):
+            zeros = np.concat((zeros, poles[to_keep]))
+            multiplicities = np.concat(
+                (multiplicities, np.round(residue[to_keep].real))
+            )
+        else:
+            msg = (
+                "Actual not equal expected, subdivision required"
+                " however this has not been implemented yet!"
+            )
+            raise NotImplementedError(msg)
+
+    return ZerosResult(zeros=zeros, multiplicities=multiplicities)
