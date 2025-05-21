@@ -7,6 +7,8 @@ import numpy.typing as npt
 from scikit_poles_zeros._AAA import AAA, poles_residues
 from scikit_poles_zeros._domain import _subdivide_domain
 
+__all__ = ["ZerosResult", "find_zeros"]
+
 
 @dataclass
 class ZerosResult:

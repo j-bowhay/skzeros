@@ -10,6 +10,8 @@ from scipy.integrate import tanhsinh
 
 from scikit_poles_zeros._integrate import _quadvec
 
+__all__ = ["Rectangle"]
+
 
 class Domain(ABC):
     """Abstract Domain"""

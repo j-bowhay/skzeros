@@ -1,13 +1,13 @@
 import numpy as np
 from numpy.testing import assert_allclose
 
-from scikit_poles_zeros._AAA import AAA, XS
-from scikit_poles_zeros._domain import Rectangle
+from scikit_poles_zeros import AAA, Rectangle
+from scikit_poles_zeros._AAA import _XS
 
 
 class TestXS:
     def test_XS_against_MATLAB(self):
-        res = XS(np.arange(0, 6), 2)
+        res = _XS(np.arange(0, 6), 2)
         excepted = np.asarray(
             [
                 0.3333,
@@ -25,8 +25,8 @@ class TestXS:
         assert_allclose(np.sort(res), excepted, rtol=1e-3)
 
     def test_include_naught_one_end_point(self):
-        res = XS([0.25, 0.5, 0.75], 5)
-        expected = XS([0, 0.25, 0.5, 0.75, 1], 5)
+        res = _XS([0.25, 0.5, 0.75], 5)
+        expected = _XS([0, 0.25, 0.5, 0.75, 1], 5)
         assert_allclose(res, expected)
 
 

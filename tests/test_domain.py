@@ -2,7 +2,8 @@ import numpy as np
 import pytest
 from numpy.testing import assert_allclose, assert_equal
 
-from scikit_poles_zeros._domain import Rectangle, _subdivide_domain
+from scikit_poles_zeros import Rectangle
+from scikit_poles_zeros._domain import _subdivide_domain
 
 from . import problems
 

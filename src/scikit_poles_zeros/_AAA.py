@@ -1,13 +1,15 @@
 import numpy as np
 import scipy
 
+__all__ = ["AAA", "evaluate", "poles_residues", "zeros"]
+
 
 def AAA(f, r, *, rtol=1e-13, max_iter=100, err_on_max_iter=True, initial_samples=16):
     # Initial support points
     t = np.array([])
     S = np.array([])
     while (m := S.size) < max_iter:
-        tm = XS(t, max(3, initial_samples - m))
+        tm = _XS(t, max(3, initial_samples - m))
         X = r.sample_boundary(tm)
         fX = f(X)
         to_keep = (np.isfinite(fX)) & (~np.isnan(fX))
@@ -40,7 +42,7 @@ def AAA(f, r, *, rtol=1e-13, max_iter=100, err_on_max_iter=True, initial_samples
     return S[:-1], fS, w
 
 
-def XS(S, p):
+def _XS(S, p):
     # make sure the end points 0 and 1 are included so we sample to the left of the
     # first support point and to the right of the last support point
     if 0 not in S:
