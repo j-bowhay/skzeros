@@ -53,10 +53,10 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/j-bowhay/scikit-poles-zeros"
-"Bug Tracker" = "https://github.com/j-bowhay/scikit-poles-zeros/issues"
-Discussions = "https://github.com/j-bowhay/scikit-poles-zeros/discussions"
-Changelog = "https://github.com/j-bowhay/scikit-poles-zeros/releases"
+Homepage = "https://github.com/j-bowhay/scikit-zeros"
+"Bug Tracker" = "https://github.com/j-bowhay/scikit-zeros/issues"
+Discussions = "https://github.com/j-bowhay/scikit-zeros/discussions"
+Changelog = "https://github.com/j-bowhay/scikit-zeros/releases"
 
 
 [tool.hatch]

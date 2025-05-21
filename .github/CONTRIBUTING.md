@@ -71,7 +71,7 @@ pytest
 Use pytest-cov to generate coverage reports:
 
 ```bash
-pytest --cov=scikit-poles-zeros
+pytest --cov=scikit-zeros
 ```
 
 # Building docs

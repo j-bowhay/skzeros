@@ -1,4 +1,4 @@
-# scikit-poles-zeros
+# scikit-zeros
 
 ```{toctree}
 :maxdepth: 2
