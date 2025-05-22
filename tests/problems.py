@@ -3,7 +3,7 @@ from math import sqrt
 
 import numpy as np
 
-from scikit_poles_zeros._domain import Rectangle
+from skzeros._domain import Rectangle
 
 
 class Problem(ABC):

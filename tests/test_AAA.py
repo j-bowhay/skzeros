@@ -1,8 +1,8 @@
 import numpy as np
 from numpy.testing import assert_allclose
 
-from scikit_poles_zeros import AAA, Rectangle
-from scikit_poles_zeros._AAA import _XS
+from skzeros import AAA, Rectangle
+from skzeros._AAA import _XS
 
 
 class TestXS:

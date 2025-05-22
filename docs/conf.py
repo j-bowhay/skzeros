@@ -6,7 +6,7 @@ from typing import Any
 project = "scikit-zeros"
 copyright = "2025, Jake Bowhay"
 author = "Jake Bowhay"
-version = release = importlib.metadata.version("scikit_poles_zeros")
+version = release = importlib.metadata.version("skzeros")
 
 extensions = [
     "myst_parser",

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 
 [project]
-name = "scikit-poles-zeros"
+name = "skzeros"
 authors = [
   { name = "Jake Bowhay", email = "jb9.bowhay@gmail.com" },
 ]
@@ -61,7 +61,7 @@ Changelog = "https://github.com/j-bowhay/scikit-zeros/releases"
 
 [tool.hatch]
 version.source = "vcs"
-build.hooks.vcs.version-file = "src/scikit_poles_zeros/_version.py"
+build.hooks.vcs.version-file = "src/skzeros/_version.py"
 
 [tool.hatch.envs.default]
 features = ["test"]
@@ -70,7 +70,7 @@ scripts.test = "pytest {args}"
 
 [tool.uv]
 dev-dependencies = [
-  "scikit_poles_zeros[test]",
+  "skzeros[test]",
 ]
 
 
@@ -88,7 +88,7 @@ testpaths = [
 
 
 [tool.coverage]
-run.source = ["scikit_poles_zeros"]
+run.source = ["skzeros"]
 report.exclude_also = [
   '\.\.\.',
   'if typing.TYPE_CHECKING:',
@@ -127,7 +127,7 @@ ignore = [
 ]
 isort.required-imports = []
 # Uncomment if using a _compat.typing backport
-# typing-modules = ["scikit_poles_zeros._compat.typing"]
+# typing-modules = ["skzeros._compat.typing"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["T20"]

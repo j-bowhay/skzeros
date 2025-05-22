@@ -8,7 +8,7 @@ from matplotlib import patches
 from scipy._lib._util import _RichResult
 from scipy.integrate import tanhsinh
 
-from scikit_poles_zeros._integrate import _quadvec
+from skzeros._integrate import _quadvec
 
 __all__ = ["Rectangle"]
 

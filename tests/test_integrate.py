@@ -1,6 +1,6 @@
 from scipy.integrate import tanhsinh
 
-from scikit_poles_zeros._integrate import _quadvec
+from skzeros._integrate import _quadvec
 
 
 def test_quadvec_rich_result():

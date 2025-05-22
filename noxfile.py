@@ -78,7 +78,7 @@ def build_api_docs(session: nox.Session) -> None:
         "--module-first",
         "--no-toc",
         "--force",
-        "src/scikit_poles_zeros",
+        "src/skzeros",
     )
 
 
