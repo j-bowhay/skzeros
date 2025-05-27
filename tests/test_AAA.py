@@ -1,7 +1,8 @@
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 
-from skzeros import AAA, Rectangle
+from skzeros import AAA, Rectangle, evaluate
 from skzeros._AAA import _XS
 
 
@@ -50,3 +51,13 @@ class TestAAA:
             | (np.imag(z) == -10)
             | (np.imag(z) == 10)
         )
+
+    @pytest.mark.parametrize("func", [np.cos, np.sin, np.exp])
+    def test_func(self, func):
+        rng = np.random.default_rng()
+        d = Rectangle(0, complex(5, 5))
+        z, f, w = AAA(func, d)
+        zz = 5 * (rng.random(100) + rng.random(100) * 1j)
+        actual = evaluate(z, f, w, zz)
+        expected = func(zz)
+        assert_allclose(actual, expected)

@@ -97,18 +97,16 @@ def evaluate(z, f, w, Z):
     Z = np.asarray(Z)
     zv = np.ravel(Z)
 
-    weights = w[..., np.newaxis]
-
     # Cauchy matrix
     # Ignore errors due to inf/inf at support points, these will be fixed later
     with np.errstate(invalid="ignore", divide="ignore"):
         CC = 1 / np.subtract.outer(zv, z)
         # Vector of values
-        r = CC @ (weights * f) / (CC @ weights)
+        r = CC @ (w * f) / (CC @ w)
 
     # Deal with input inf: `r(inf) = lim r(z) = sum(w*f) / sum(w)`
     if np.any(np.isinf(zv)):
-        r[np.isinf(zv)] = np.sum(weights * f) / np.sum(weights)
+        r[np.isinf(zv)] = np.sum(w * f) / np.sum(w)
 
     # Deal with NaN
     ii = np.nonzero(np.isnan(r))[0]
