@@ -5,7 +5,7 @@ scikit-zeros: A package to compute all the zeros of a meromorphic function in a 
 of the complex plane.
 """
 
-from ._AAA import AAA, evaluate, poles_residues, zeros
+from ._AAA import AAA, derivative, evaluate, poles_residues, zeros
 from ._domain import Rectangle
 from ._version import version as __version__
 from ._zeros import ZerosResult, find_zeros
@@ -15,6 +15,7 @@ __all__ = [
     "Rectangle",
     "ZerosResult",
     "__version__",
+    "derivative",
     "evaluate",
     "find_zeros",
     "poles_residues",

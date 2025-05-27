@@ -1,7 +1,9 @@
+import math
+
 import numpy as np
 import scipy
 
-__all__ = ["AAA", "evaluate", "poles_residues", "zeros"]
+__all__ = ["AAA", "derivative", "evaluate", "poles_residues", "zeros"]
 
 
 def AAA(f, r, *, rtol=1e-13, max_iter=100, err_on_max_iter=True, initial_samples=16):
@@ -121,3 +123,42 @@ def evaluate(z, f, w, Z):
             r[jj] = f[zv[jj] == z].squeeze()
 
     return np.reshape(r, Z.shape)
+
+
+def derivative(z, f, w, Z, k=1):
+    Z = np.asarray(Z)
+    zv = np.ravel(Z)
+
+    if z.size <= 1:
+        return np.zeros_like(Z)
+
+    def d(_):
+        return 0
+
+    for wj, zj in zip(w, z, strict=False):
+
+        def D(z, wj=wj, zj=zj):
+            return D(z) + wj / (zv - zj)
+
+    dRz = np.empty_like(zv)
+    for i, zzj in enumerate(zv):
+        if np.min(np.abs(zzj - z)) > 0:  # usual point
+            gam = (wj / (zzj - z)) / D(zzj)
+            delk = f
+            for _ in range(k):
+                phik = gam * delk
+                delk = (delk - phik) / (z - zzj)
+        else:
+            pos = np.argmin(np.abs(zzj - z))
+            gam = -w / w[pos]
+            gam = np.delete(gam, pos)
+            zjnow = np.delete(z, pos)
+            fjnow = np.delete(f, pos)
+            del_ = (fjnow - f[pos]) / (zjnow - zzj)
+            delk = del_
+            phik = gam * delk
+            for _ in range(k):
+                phik = gam * delk
+                delk = (delk - phik) / (zjnow - zzj)
+        dRz[i] = phik * math.factorial(k)
+    return dRz

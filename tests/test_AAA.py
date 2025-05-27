@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
-from numpy.testing import assert_allclose
+from numpy.testing import assert_allclose, assert_equal
 
-from skzeros import AAA, Rectangle, evaluate
+from skzeros import AAA, Rectangle, derivative, evaluate
 from skzeros._AAA import _XS
 
 
@@ -54,10 +54,16 @@ class TestAAA:
 
     @pytest.mark.parametrize("func", [np.cos, np.sin, np.exp])
     def test_func(self, func):
-        rng = np.random.default_rng()
+        rng = np.random.default_rng(3423525)
         d = Rectangle(0, complex(5, 5))
         z, f, w = AAA(func, d)
         zz = 5 * (rng.random(100) + rng.random(100) * 1j)
         actual = evaluate(z, f, w, zz)
         expected = func(zz)
         assert_allclose(actual, expected)
+
+    def test_derivative_length_1(self):
+        rng = np.random.default_rng(890184901)
+        zz = 5 * (rng.random(100) + rng.random(100) * 1j)
+        res = derivative(np.array([1.0]), np.array([1.0]), np.array([1.0]), zz)
+        assert_equal(res, np.zeros_like(zz))
