@@ -125,40 +125,35 @@ def evaluate(z, f, w, Z):
     return np.reshape(r, Z.shape)
 
 
-def derivative(z, f, w, Z, k=1):
+def derivative(z, f, w, Z, *, k=1):
     Z = np.asarray(Z)
-    zv = np.ravel(Z)
 
     if z.size <= 1:
         return np.zeros_like(Z)
 
-    def d(_):
-        return 0
+    out = np.empty_like(Z)
+    for i in np.ndindex(out.shape):
+        out[i] = _derivative_scalar(z, f, w, Z[i], k)
+    return out
 
-    for wj, zj in zip(w, z, strict=False):
 
-        def D(z, wj=wj, zj=zj):
-            return D(z) + wj / (zv - zj)
-
-    dRz = np.empty_like(zv)
-    for i, zzj in enumerate(zv):
-        if np.min(np.abs(zzj - z)) > 0:  # usual point
-            gam = (wj / (zzj - z)) / D(zzj)
-            delk = f
-            for _ in range(k):
-                phik = gam * delk
-                delk = (delk - phik) / (z - zzj)
-        else:
-            pos = np.argmin(np.abs(zzj - z))
-            gam = -w / w[pos]
-            gam = np.delete(gam, pos)
-            zjnow = np.delete(z, pos)
-            fjnow = np.delete(f, pos)
-            del_ = (fjnow - f[pos]) / (zjnow - zzj)
-            delk = del_
-            phik = gam * delk
-            for _ in range(k):
-                phik = gam * delk
-                delk = (delk - phik) / (zjnow - zzj)
-        dRz[i] = phik * math.factorial(k)
-    return dRz
+def _derivative_scalar(zj, fj, wj, Z, k=1):
+    diff = np.abs(Z - zj)
+    if np.min(diff) > 0:
+        V = wj / (Z - zj)
+        gamma = V / np.sum(V)
+        delta = fj
+        phi = 0
+        for _ in range(k + 1):
+            phi = gamma @ delta
+            delta = (delta - phi) / (zj - Z)
+    else:
+        j = np.argmin(diff)
+        gamma = np.delete(-wj / wj[j], j)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            delta = np.delete((fj - fj[j]) / (zj - zj[j]), j)
+        zz = np.delete(zj, j)
+        for _ in range(k):
+            phi = gamma @ delta
+            delta = (delta - phi) / (zz - zj[j])
+    return math.factorial(k) * phi

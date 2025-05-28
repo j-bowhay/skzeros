@@ -52,14 +52,32 @@ class TestAAA:
             | (np.imag(z) == 10)
         )
 
-    @pytest.mark.parametrize("func", [np.cos, np.sin, np.exp])
-    def test_func(self, func):
+    @pytest.mark.parametrize(
+        ("func", "deriv"),
+        [(np.cos, lambda z: -np.sin(z)), (np.sin, np.cos), (np.exp, np.exp)],
+    )
+    def test_func(self, func, deriv):
         rng = np.random.default_rng(3423525)
         d = Rectangle(0, complex(5, 5))
         z, f, w = AAA(func, d)
         zz = 5 * (rng.random(100) + rng.random(100) * 1j)
+
+        # check function
         actual = evaluate(z, f, w, zz)
         expected = func(zz)
+        assert_allclose(actual, expected)
+        # and at support points
+        actual = evaluate(z, f, w, z)
+        expected = func(z)
+        assert_allclose(actual, expected)
+
+        # first derivative
+        actual = derivative(z, f, w, zz, k=1)
+        expected = deriv(zz)
+        assert_allclose(actual, expected)
+        # and at support points
+        actual = derivative(z, f, w, z, k=1)
+        expected = deriv(z)
         assert_allclose(actual, expected)
 
     def test_derivative_length_1(self):
