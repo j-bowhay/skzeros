@@ -17,11 +17,12 @@ def AAA(f, r, *, rtol=1e-13, max_iter=100, err_on_max_iter=True, initial_samples
         to_keep = (np.isfinite(fX)) & (~np.isnan(fX))
         X = X[to_keep]
         fX = fX[to_keep]
-        fS = f(S)
 
         if m == 0:
             R = np.mean(fX)
+            fS = np.array([])
         else:
+            fS = f(S)
             C = 1 / np.subtract.outer(X, S)
             A = np.subtract.outer(fX, fS) * C
             _, _, V = scipy.linalg.svd(
