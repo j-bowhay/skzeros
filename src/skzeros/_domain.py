@@ -10,7 +10,7 @@ from scipy.integrate import tanhsinh
 
 from skzeros._integrate import _quadvec
 
-__all__ = ["Rectangle"]
+__all__ = ["Rectangle", "force_subdivide"]
 
 
 class Domain(ABC):
@@ -288,3 +288,25 @@ def _subdivide_domain(
                 + round(arg_principle.integral.imag) * 1j
             )
     return leafs
+
+
+def force_subdivide(region, n_times):
+    def inner(region, level):
+        if level < n_times:
+            region.subdivide()
+            for child in region.children:
+                inner(child, level + 1)
+
+    inner(region, 0)
+
+
+def get_leaf_regions(r):
+    if len(r.children) >= 1:
+        leafs = []
+        for child in r.children:
+            if len(child.children) == 0:
+                leafs.append(child)
+            else:
+                leafs.extend(get_leaf_regions(child))
+        return leafs
+    return [r]

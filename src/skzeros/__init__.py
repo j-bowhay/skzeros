@@ -6,7 +6,7 @@ of the complex plane.
 """
 
 from ._AAA import AAA, derivative, evaluate, poles_residues, zeros
-from ._domain import Rectangle
+from ._domain import Rectangle, force_subdivide
 from ._version import version as __version__
 from ._zeros import ZerosResult, find_zeros
 
@@ -18,6 +18,7 @@ __all__ = [
     "derivative",
     "evaluate",
     "find_zeros",
+    "force_subdivide",
     "poles_residues",
     "zeros",
 ]
