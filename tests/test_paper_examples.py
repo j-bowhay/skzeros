@@ -53,3 +53,22 @@ def test_example_1():
     d = Rectangle(0, complex(1, 1))
     res = find_zeros(d, f, f_z, max_arg_principle=7.1)
     assert_allclose(np.sort(res.zeros), np.sort(zeros))
+
+
+def test_example_2():
+    A = -0.19435
+    B = 1000.41
+    C = 522463
+    T = 0.005
+
+    def f(z):
+        return z**2 + A * z + B * np.exp(-T * z) + C
+
+    def f_z(z):
+        return 2 * z + A - T * B * np.exp(-T * z)
+
+    r = Rectangle(complex(-2500, -15000), complex(10, 15000))
+    res = find_zeros(r, f, f_z, max_arg_principle=7)
+    zz = np.add.outer(np.linspace(-2500, 10), np.linspace(-15000, 15000) * 1j)
+    f_bar = np.abs(np.median(f(zz)))
+    assert_allclose(np.abs(f(res.zeros)) / f_bar, 0, atol=1e-10)
