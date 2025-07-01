@@ -159,3 +159,59 @@ def test_example_3b():
         )
         poles = np.concatenate((poles, p[to_keep]))
     assert_allclose(np.min(np.abs(np.subtract.outer(e, poles)), axis=1), 0, atol=1e-8)
+
+
+@np.vectorize
+def cauchy_integral_derivative(f, z, r=1, rtol=1e-15):
+    def integrand(t):
+        return np.exp(-t) * f(z + r * np.exp(t))
+
+    m = 2
+    s = integrand(2j * np.pi * np.arange(1, m + 1) / m)
+    val1 = np.mean(s) / r
+    err1 = np.nan
+    while m < 1e6:
+        m *= 2
+        s = np.concatenate((s, integrand(2j * np.pi * np.arange(1, m + 1, step=2) / m)))
+        val = np.mean(s) / r
+        kappa = np.mean(np.abs(s)) / np.abs(val)
+        err0 = np.abs(val - val1) / np.abs(val)
+        err = (err0 / err1) ** 2 * err0
+        if err <= kappa * rtol:
+            return val
+        val1 = val
+        err1 = err0
+    return np.nan
+
+
+def test_log_deriv_accuracy():
+    d = Rectangle(0, complex(1, 1))
+
+    rng = np.random.default_rng(123456)
+    orders = [1, 2, 4, 6]
+
+    for order in orders:
+        for _ in range(1000):
+            # generate random zero
+            zero = complex(rng.uniform(), rng.uniform())
+
+            def f(z, order=order, zero=zero):
+                return np.exp(z) * (z - zero) ** order
+
+            def f_z(z, order=order, zero=zero):
+                return (
+                    order * (z - zero) ** (order - 1) + (z - zero) ** order
+                ) * np.exp(z)
+
+            res_log_deriv = AAA(lambda z: f_z(z) / f(z), d)
+
+            assert_allclose(
+                np.min(np.abs(poles_residues(*res_log_deriv) - zero)), 0, atol=1e-12
+            )
+
+            res_log_deriv_AAA = AAA(
+                lambda z: cauchy_integral_derivative(f, z, r=1e-2) / f(z), d, rtol=1e-12
+            )
+            assert_allclose(
+                np.min(np.abs(poles_residues(*res_log_deriv_AAA) - zero)), 0, atol=1e-12
+            )
