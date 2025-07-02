@@ -8,7 +8,7 @@ name = "skzeros"
 authors = [
   { name = "Jake Bowhay", email = "jb9.bowhay@gmail.com" },
 ]
-description = "A package to compute all the poles and zeros of a meromorphic function in a cbounded subset of the complex plane."
+description = "A package to compute all the poles and zeros of a holomorphic function in a region of the complex plane."
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [

@@ -3,7 +3,7 @@ from __future__ import annotations
 import importlib.metadata
 from typing import Any
 
-project = "scikit-zeros"
+project = "skzeros"
 copyright = "2025, Jake Bowhay"
 author = "Jake Bowhay"
 version = release = importlib.metadata.version("skzeros")

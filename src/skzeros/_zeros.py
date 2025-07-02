@@ -2,7 +2,6 @@ from collections import deque
 from dataclasses import dataclass
 
 import numpy as np
-import numpy.typing as npt
 
 from skzeros._AAA import AAA, poles_residues
 from skzeros._domain import _subdivide_domain
@@ -12,13 +11,56 @@ __all__ = ["ZerosResult", "find_zeros"]
 
 @dataclass
 class ZerosResult:
-    zeros: npt.ArrayLike
-    multiplicities: npt.ArrayLike
+    """Results class for the zeros found by the `find_zeros` function.
+
+    Attributes
+    ----------
+    zeros : np.ndarray
+        The computed zeros of the function.
+    multiplicities : np.ndarray
+        The multiplicities of the zeros.
+    """
+
+    zeros: np.ndarray
+    multiplicities: np.ndarray
 
 
 def find_zeros(
     domain, f, f_z, max_arg_principle, quadrature_args=None, maxiter=50, rng=None
 ):
+    """Find all the zeros of a holomorphic function in a given domain.
+
+    First the `domain` is subdivided into smaller regions until the value of the
+    argument principle is less than `max_arg_principle`. Then, a AAA approximation
+    of the logarithmic derivative is used to locate the zeros of `f`.
+
+    Parameters
+    ----------
+    domain : Domain
+        The domain in which to search for zeros.
+    f : callable
+        The holomorphic function for which to find zeros. It should accept a 1D array
+        and return a 1D array of complex numbers.
+    f_z : callable
+        The derivative of the holomorphic function `f`. It should accept a 1D array
+        and return a 1D array of complex numbers.
+    max_arg_principle : float
+        Subdivide `domain` until the value of the argument principle is less than this
+        value.
+    quadrature_args : dict, optional
+        Additional arguments to pass to the quadrature method used in subdivision.
+        See `scipy.integrate.quadvec` for the supported arguments, by default None.
+    maxiter : int, optional
+        The maximum number of attempts at subdivision allowed, by default 50
+    rng : np.random.Generator, optional
+        Random number generator to use for sampling points in the domain. If None,
+        the default numpy random generator is used.
+
+    Returns
+    -------
+    ZerosResult
+        A `ZerosResult` object containing the computed zeros and their multiplicities.
+    """
     regions = _subdivide_domain(
         domain=domain,
         f=f,

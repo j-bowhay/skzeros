@@ -7,6 +7,36 @@ __all__ = ["AAA", "derivative", "evaluate", "poles_residues", "zeros"]
 
 
 def AAA(f, r, *, rtol=1e-13, max_iter=100, err_on_max_iter=True, initial_samples=16):
+    """Compute a rational approximation of a function using the continuum AAA algorithm.
+
+    Parameters
+    ----------
+    f : callable
+        Function to approximate, should accept a 1D array and return a 1D array.
+    r : Domain
+        Domain on which to approximate the function.
+    rtol : float, optional
+        Relative tolerance of the approximation, by default 1e-13
+    max_iter : int, optional
+        Maximum number of iteration (degree of the rational approximation),
+        by default 100.
+    err_on_max_iter : bool, optional
+        Whether to raise an error if `max_iter` is reached and but a relative accuracy
+        of `rtol` has not been achieved, by default True.
+    initial_samples : int, optional
+        The initial number of samples of the function to take, by default 16. Subsequent
+        initerations will take ``max(3, initial_samples - m)`` samples, where `m` is the
+        number of iterations already performed.
+
+    Returns
+    -------
+    z :
+        Array of support points of the rational approximation.
+    f :
+        Values of the function at the support points.
+    w :
+        Barycentric weights of the rational approximation.
+    """
     # Initial support points
     t = np.array([])
     S = np.array([])
@@ -58,6 +88,26 @@ def _XS(S, p):
 
 
 def poles_residues(z, f, w, residue=False):
+    """Compute the poles and residues of the rational function in barycentric form.
+
+    Parameters
+    ----------
+    z : 1D array
+        Support points of the rational function.
+    f : 1D array
+        Values of the rational function at the support points.
+    w : 1D array
+        Barycentric weights of the rational function.
+    residue : bool, optional
+        Whether to return the residue of the computed poles, by default False
+
+    Returns
+    -------
+    poles : 1D array
+        Poles of the rational function.
+    residues : 1D array, optional
+        Residues of the poles, if `residue` is True.
+    """
     # poles
     m = w.size
     B = np.eye(m + 1, dtype=w.dtype)
@@ -81,6 +131,22 @@ def poles_residues(z, f, w, residue=False):
 
 
 def zeros(z, f, w):
+    """Compute the zeros of the rational function in barycentric form.
+
+    Parameters
+    ----------
+    z : 1D array
+        Support points of the rational function.
+    f : 1D array
+        Values of the rational function at the support points.
+    w : 1D array
+        Barycentric weights of the rational function.
+
+    Returns
+    -------
+    zeros : 1D array
+        Zeros of the rational function.
+    """
     # zeros
     m = w.size
     B = np.eye(m + 1, dtype=w.dtype)
@@ -96,6 +162,24 @@ def zeros(z, f, w):
 
 
 def evaluate(z, f, w, Z):
+    """Evaluate the rational function in barycentric form at points `Z`.
+
+    Parameters
+    ----------
+    z : 1D array
+        Support points of the rational function.
+    f : 1D array
+        Values of the rational function at the support points.
+    w : 1D array
+        Barycentric weights of the rational function.
+    Z : ndarray
+        Points at which to evaluate the rational function.
+
+    Returns
+    -------
+    r : ndarray
+        Values of the rational function at the points `Z`.
+    """
     # evaluate rational function in barycentric form.
     Z = np.asarray(Z)
     zv = np.ravel(Z)
@@ -127,6 +211,27 @@ def evaluate(z, f, w, Z):
 
 
 def derivative(z, f, w, Z, *, k=1):
+    """Evaluate the k-th derivative of the rational function in barycentric form at
+    points `Z`.
+
+    Parameters
+    ----------
+    z : 1D array
+        Support points of the rational function.
+    f : 1D array
+        Values of the rational function at the support points.
+    w : 1D array
+        Barycentric weights of the rational function.
+    Z : ndarray
+        Points at which to evaluate the rational function.
+    k : int, optional
+        The order of the derivative to calculate, by default 1
+
+    Returns
+    -------
+    out : ndarray
+        Values of the k-th derivative of the rational function at the points `Z`.
+    """
     Z = np.asarray(Z)
 
     if z.size <= 1:

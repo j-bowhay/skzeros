@@ -1,17 +1,13 @@
 # scikit-zeros
 
-```{toctree}
-:maxdepth: 2
-:hidden:
-
-```
-
 ```{include} ../README.md
 :start-after: <!-- SPHINX-START -->
 ```
 
-## Indices and tables
+```{toctree}
+:maxdepth: 2
+:hidden:
+:caption: API
 
-- {ref}`genindex`
-- {ref}`modindex`
-- {ref}`search`
+api/skzeros
+```

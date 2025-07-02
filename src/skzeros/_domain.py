@@ -61,7 +61,18 @@ class Domain(ABC):
 
 
 class Rectangle(Domain):
-    """Rectangle region in the complex plane."""
+    """Rectangle region in the complex plane.
+
+    Parameters
+    ----------
+    bottom_left : complex
+        Bottom left corner of the rectangle.
+    top_right : complex
+        Top right corner of the rectangle.
+    parent : Domain, optional
+        Parent domain, by default None. This is used to keep track of the hierarchy of
+        domains and is useful for subdividing the domain.
+    """
 
     __slots__ = "_bottom_left", "_corners", "_top_right", "children"
 
@@ -91,10 +102,12 @@ class Rectangle(Domain):
 
     @property
     def bottom_left(self):
+        """Bottom left corner of the rectangle."""
         return self._bottom_left
 
     @property
     def top_right(self):
+        """Top right corner of the rectangle."""
         return self._top_right
 
     @property
@@ -106,7 +119,26 @@ class Rectangle(Domain):
     def contour_integral(
         self, f, *, method: Literal["gk21", "tanhsinh"] = "gk21", quadrature_args=None
     ):
-        """Compute the contour integral of `f` around the region."""
+        """Compute the contour integral of `f` around the region.
+
+        Parameters
+        ----------
+        f : callable
+            Function to integrate. It should accept a complex number and return a
+            complex number.
+        method : {'gk21', 'tanhsinh'}, optional
+            Method to use for the contour integral. 'gk21' uses the GK21 method
+            (Gauss-Kronrod 21-point rule) and 'tanhsinh' uses the tanhsinh method.
+            By default 'gk21'.
+        quadrature_args : dict, optional
+            Additional arguments to pass to the quadrature method.
+
+        Returns
+        -------
+        _RichResult
+            Result of the contour integral, which includes the integral value, error,
+            number of function evaluations, and success status.
+        """
         quadrature_args = {} if quadrature_args is None else quadrature_args
 
         def f_wrapped(t, _a, _b):
@@ -145,6 +177,21 @@ class Rectangle(Domain):
         return res
 
     def subdivide(self, *, offset=0):
+        """Subdivide the rectangle into two smaller rectangles.
+
+        The rectangles are split either vertically or horizontally depending on the
+        aspect ratio of the rectangle. The `offset` parameter controls how much the
+        split is offset from the center of the rectangle. The two child rectangles
+        are stored in the `children` attribute of the rectangle.
+
+        Parameters
+        ----------
+        offset : float, optional
+            Offset for the split, by default 0.0. Must be between -0.5 and 0.5.
+            A positive offset will move the split towards the right or top, while a
+            negative offset will move it towards the left or bottom. If the offset is
+            0.0, the rectangle is split exactly in the middle.
+        """
         if not abs(offset) < 0.5:
             msg = "Offset must be between -0.5 and 0.5"
             raise ValueError(msg)
@@ -182,6 +229,13 @@ class Rectangle(Domain):
             )
 
     def plot(self, ax):
+        """Plot the rectangle on a given matplotlib axis.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+            The matplotlib axis to plot on.
+        """
         diff = self.top_right - self.bottom_left
         ax.add_patch(
             patches.Rectangle(
@@ -197,6 +251,24 @@ class Rectangle(Domain):
             child.plot(ax)
 
     def sample_boundary(self, t):
+        """Sample points on the boundary of the rectangle.
+
+        Parameters
+        ----------
+        t : array_like
+            Array of values in the interval [0, 1) which parametrise where the boundary
+            points will be sampled. The values are interpreted as follows:
+            - [0, 0.25) corresponds to the left edge
+            - [0.25, 0.5) corresponds to the top edge
+            - [0.5, 0.75) corresponds to the right edge
+            - [0.75, 1) corresponds to the bottom edge
+
+        Returns
+        -------
+        ndarray
+            An array of complex numbers representing the sampled points on the boundary
+            of the rectangle.
+        """
         t = super().sample_boundary(t)
         out = np.empty_like(t, dtype=np.complex128)
         corners = self.corners
@@ -291,6 +363,16 @@ def _subdivide_domain(
 
 
 def force_subdivide(region, n_times):
+    """Forcefully subdivide a region a specified number of times.
+
+    Parameters
+    ----------
+    region : Domain
+        Domain to subdivide.
+    n_times : int
+        Number of times to subdivide the domain.
+    """
+
     def inner(region, level):
         if level < n_times:
             region.subdivide()
