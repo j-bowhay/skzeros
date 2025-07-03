@@ -11,6 +11,7 @@ version = release = importlib.metadata.version("skzeros")
 extensions = [
     "myst_parser",
     "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",

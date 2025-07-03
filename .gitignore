@@ -163,3 +163,5 @@ scratch/
 
 # figures
 *.pdf
+
+/docs/api/generated/
