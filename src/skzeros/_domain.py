@@ -10,7 +10,7 @@ from scipy.integrate import tanhsinh
 
 from skzeros._integrate import _quadvec
 
-__all__ = ["Rectangle", "force_subdivide"]
+__all__ = ["Domain", "Rectangle", "force_subdivide"]
 
 
 class Domain(ABC):

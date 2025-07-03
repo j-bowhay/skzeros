@@ -17,6 +17,7 @@ Complex Regions
    :toctree: generated/
 
    Rectangle
+   Domain
 
 
 Rational Approximation
