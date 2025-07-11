@@ -4,7 +4,6 @@
 [![Documentation Status][rtd-badge]][rtd-link]
 
 [![PyPI version][pypi-version]][pypi-link]
-[![Conda-Forge][conda-badge]][conda-link]
 [![PyPI platforms][pypi-platforms]][pypi-link]
 
 [![GitHub Discussion][github-discussions-badge]][github-discussions-link]
@@ -18,9 +17,9 @@
 [conda-link]:               https://github.com/conda-forge/scikit-zeros-feedstock
 [github-discussions-badge]: https://img.shields.io/static/v1?label=Discussions&message=Ask&color=blue&logo=github
 [github-discussions-link]:  https://github.com/j-bowhay/scikit-zeros/discussions
-[pypi-link]:                https://pypi.org/project/scikit-zeros/
-[pypi-platforms]:           https://img.shields.io/pypi/pyversions/scikit-zeros
-[pypi-version]:             https://img.shields.io/pypi/v/scikit-zeros
+[pypi-link]:                https://pypi.org/project/skzeros/
+[pypi-platforms]:           https://img.shields.io/pypi/pyversions/skzeros
+[pypi-version]:             https://img.shields.io/pypi/v/skzeros
 [rtd-badge]:                https://readthedocs.org/projects/scikit-zeros/badge/?version=latest
 [rtd-link]:                 https://scikit-zeros.readthedocs.io/en/latest/?badge=latest
 
