@@ -2,7 +2,6 @@
 
 [![Actions Status][actions-badge]][actions-link]
 [![Documentation Status][rtd-badge]][rtd-link]
-
 [![PyPI version][pypi-version]][pypi-link]
 [![PyPI platforms][pypi-platforms]][pypi-link]
 
@@ -25,4 +24,44 @@
 
 <!-- prettier-ignore-end -->
 
-**WARNING UNDER DEVELOPMENT**
+`scikit-zeros` is a Python package for finding the all the roots of a
+holomorphic function in a given region of the complex plane. It is based on
+subdivision using the argument principle combined with AAA rational
+approximation of the logarithm derivative.
+
+## Installation
+
+You can install `scikit-zeros` using pip:
+
+```bash
+pip install skzeros
+```
+
+## Example
+
+```python
+import numpy as np
+import skzeros
+
+A = -0.19435
+B = 1000.41
+C = 522463
+T = 0.005
+
+
+def f(z):
+    return z**2 + A * z + B * np.exp(-T * z) + C
+
+
+def f_z(z):
+    return 2 * z + A - T * B * np.exp(-T * z)
+
+
+r = skzeros.Rectangle(complex(-2500, -15000), complex(10, 15000))
+res = skzeros.find_zeros(r, f, f_z, max_arg_principle=7)
+```
+
+## See Also
+
+- [cxroots](https://github.com/rparini/cxroots)
+- [POLZE](https://github.com/nennigb/polze)
