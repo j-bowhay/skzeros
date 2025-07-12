@@ -1,3 +1,4 @@
+import warnings
 from collections import deque
 from dataclasses import dataclass
 
@@ -108,10 +109,37 @@ def find_zeros(
                 (multiplicities, np.round(residue[to_keep].real))
             )
         else:
-            msg = (
-                "Actual not equal expected, subdivision required"
-                " however this has not been implemented yet!"
-            )
-            raise NotImplementedError(msg)
+            standard_split_failed = False
+            while True:
+                warnings.warn(
+                    "After initial subdivision the argument principle does "
+                    "not match the output of AAA, applying further "
+                    "subdivision",
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
+                if not standard_split_failed:
+                    # first we try just a standard subdivision
+                    region.subdivide()
+                else:
+                    region.subdivide(
+                        offset=((0.1 - 0.01) * rng.random(1)[0] + 0.01)
+                        * (-1) ** rng.integers(1, 2, endpoint=True)
+                    )
+                for child in region.children:
+                    arg_principle = child.argument_principle(
+                        f, f_z, quadrature_args=quadrature_args
+                    )
+                    if np.any(~arg_principle.success):
+                        region.children = []
+                        standard_split_failed = True
+                        break
+                    child._arg_principle = (
+                        round(arg_principle.integral.real)
+                        + round(arg_principle.integral.imag) * 1j
+                    )
+                else:
+                    queue.extend(region.children)
+                    break
 
     return ZerosResult(zeros=zeros, multiplicities=multiplicities)
