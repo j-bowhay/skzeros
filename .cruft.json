@@ -4,9 +4,9 @@
   "checkout": null,
   "context": {
     "cookiecutter": {
-      "project_name": "scikit-zeros",
+      "project_name": "skzeros",
       "org": "j-bowhay",
-      "url": "https://github.com/j-bowhay/scikit-zeros",
+      "url": "https://github.com/j-bowhay/skzeros",
       "full_name": "Jake Bowhay",
       "email": "jb9.bowhay@gmail.com",
       "project_short_description": "A package to compute all the zeros of a holomorphic function in a region of the complex plane.",
@@ -14,7 +14,7 @@
       "backend": "hatch",
       "vcs": true,
       "__year": "2025",
-      "__project_slug": "scikit_zeros",
+      "__project_slug": "skzeros",
       "__type": "pure",
       "__answers": "",
       "__ci": "github",

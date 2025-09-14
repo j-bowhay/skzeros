@@ -1,4 +1,4 @@
-# scikit-zeros
+# skzeros
 
 ```{include} ../README.md
 :start-after: <!-- SPHINX-START -->

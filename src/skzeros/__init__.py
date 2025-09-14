@@ -1,7 +1,7 @@
 """
 Copyright (c) 2025 Jake Bowhay. All rights reserved.
 
-scikit-zeros: A package to compute all the zeros of a holomorphic function in a region
+skzeros: A package to compute all the zeros of a holomorphic function in a region
 of the complex plane.
 """
 

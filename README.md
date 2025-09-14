@@ -1,4 +1,4 @@
-# scikit-zeros
+# skzeros
 
 [![Actions Status][actions-badge]][actions-link]
 [![Documentation Status][rtd-badge]][rtd-link]
@@ -11,12 +11,10 @@
 <!-- SPHINX-START -->
 
 <!-- prettier-ignore-start -->
-[actions-badge]:            https://github.com/j-bowhay/scikit-zeros/workflows/CI/badge.svg
-[actions-link]:             https://github.com/j-bowhay/scikit-zeros/actions
-[conda-badge]:              https://img.shields.io/conda/vn/conda-forge/scikit-zeros
-[conda-link]:               https://github.com/conda-forge/scikit-zeros-feedstock
+[actions-badge]:            https://github.com/j-bowhay/skzeros/workflows/CI/badge.svg
+[actions-link]:             https://github.com/j-bowhay/skzeros/actions
 [github-discussions-badge]: https://img.shields.io/static/v1?label=Discussions&message=Ask&color=blue&logo=github
-[github-discussions-link]:  https://github.com/j-bowhay/scikit-zeros/discussions
+[github-discussions-link]:  https://github.com/j-bowhay/skzeros/discussions
 [pypi-link]:                https://pypi.org/project/skzeros/
 [pypi-platforms]:           https://img.shields.io/pypi/pyversions/skzeros
 [pypi-version]:             https://img.shields.io/pypi/v/skzeros
@@ -25,14 +23,14 @@
 
 <!-- prettier-ignore-end -->
 
-`scikit-zeros` is a Python package for finding the all the roots of a
-holomorphic function in a given region of the complex plane. It is based on
-subdivision using the argument principle combined with AAA rational
-approximation of the logarithm derivative.
+`skzeros` is a Python package for finding the all the roots of a holomorphic
+function in a given region of the complex plane. It is based on subdivision
+using the argument principle combined with AAA rational approximation of the
+logarithm derivative.
 
 ## Installation
 
-You can install `scikit-zeros` using pip:
+You can install `skzeros` using pip:
 
 ```bash
 pip install skzeros
