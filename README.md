@@ -60,6 +60,12 @@ r = skzeros.Rectangle(complex(-2500, -15000), complex(10, 15000))
 res = skzeros.find_zeros(r, f, f_z, max_arg_principle=7)
 ```
 
+## Reference
+
+For a description of the algorithm please see
+[https://arxiv.org/pdf/2509.15936](https://arxiv.org/pdf/2509.15936). For code
+to reproduce all results in the paper please see the `paper` directory.
+
 ## See Also
 
 - [cxroots](https://github.com/rparini/cxroots)
