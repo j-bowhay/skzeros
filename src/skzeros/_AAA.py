@@ -40,6 +40,8 @@ def AAA(f, r, *, rtol=1e-13, max_iter=100, err_on_max_iter=True, initial_samples
     # Initial support points
     t = np.array([])
     S = np.array([])
+    ill_conditioned = False
+    ill_conditioned_tol = 1 / (3 * np.finfo(np.float64).eps)
     while (m := S.size) < max_iter:
         tm = _XS(t, max(3, initial_samples - m))
         X = r.sample_boundary(tm)
@@ -55,10 +57,23 @@ def AAA(f, r, *, rtol=1e-13, max_iter=100, err_on_max_iter=True, initial_samples
             fS = f(S)
             C = 1 / np.subtract.outer(X, S)
             A = np.subtract.outer(fX, fS) * C
-            _, _, V = scipy.linalg.svd(
-                A, full_matrices=(A.shape[0] <= A.shape[1]), check_finite=False
-            )
+            if not ill_conditioned:
+                _, s, V = scipy.linalg.svd(
+                    A, full_matrices=(A.shape[0] <= A.shape[1]), check_finite=False
+                )
+                with np.errstate(invalid="ignore", divide="ignore"):
+                    if s[0] / s[-1] > ill_conditioned_tol:
+                        ill_conditioned = True
+            if ill_conditioned:
+                col_norm = np.linalg.norm(A, axis=0)
+                _, s, V = scipy.linalg.svd(
+                    A / col_norm,
+                    full_matrices=(A.shape[0] <= A.shape[1]),
+                    check_finite=False,
+                )
             w = V.conj()[-1, :]
+            if ill_conditioned:
+                w /= col_norm
             R = (C @ (w * fS)) / (C @ w)
 
         err = np.linalg.norm(fX - R, ord=np.inf)
